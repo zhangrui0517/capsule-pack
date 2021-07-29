@@ -1,0 +1,5 @@
+body {
+  display: flex;
+  background-color: red;
+  background: url(../asset/image/cat.jpg)
+}
