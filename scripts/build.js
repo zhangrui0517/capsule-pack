@@ -13,6 +13,6 @@ compiler.run((err, stats) => {
   } else {
     const statsJSON = stats.toJson()
     // console.log('statsJSON: ',statsJSON)
-    console.log('打包好了哟')
+    console.log(stats.toString())
   }
 })

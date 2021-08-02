@@ -7,7 +7,7 @@ module.exports = {
     index: './src/index.js'
   },
   output: {
-    filename: '[name].js',
+    filename: '[name].[contenthash].js',
     path: path.resolve(process.env.BUNDLE_PREFIX_PATH, 'dist'),
     clean: true
   },
@@ -60,6 +60,8 @@ module.exports = {
     })
   ],
   optimization: {
+    runtimeChunk: 'single',
+    moduleIds: 'deterministic',
     splitChunks: {
       /**
        * 有效值为 all，async 和 initial
@@ -74,10 +76,16 @@ module.exports = {
       maxAsyncRequests: 30,
       /** 入口点的最大并行请求数 */
       maxInitialRequests: 30,
+      /** 缓存组的配置，会覆盖掉默认配置，用于自定义部分模块的分割方式； */
       cacheGroups: {
         defaultVendors: {
+          /** 匹配所有第三方模块 */
           test: /[\\/]node_modules[\\/]/,
+          /** 拆分模块名称 */
+          name: 'vendors',
+          /** 优先级 */
           priority: -10,
+          /** 是否重用已经拆分出的模块 */
           reuseExistingChunk: true,
         },
         default: {
