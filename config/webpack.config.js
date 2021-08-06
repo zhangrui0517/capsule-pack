@@ -9,12 +9,57 @@ module.exports = {
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(process.env.BUNDLE_PREFIX_PATH, 'dist'),
-    clean: true
+    clean: true,
+    /** 如果要打包一个js library */
+    // library: {
+    //   name: 'webpackNumbers',
+    //   /** 包适配的规范 */
+    //   type: 'umd',
+    // },
   },
   module: {
     rules: [
       {
         oneOf: [
+          /** 处理JS，如转换ES6代码为ES5 */
+          {
+            test: /\.(jsx|js|ts|tsx)$/i,
+            include: /(src)/,
+            exclude: /(node_modules)/,
+            use: [
+              {
+                loader: 'babel-loader',
+                options: {
+                  presets: [['@babel/preset-env', {
+                    "targets": {
+                      /** 目标浏览器 */
+                      browsers: [
+                        'IE 11'
+                      ]
+                    },
+                    /** 在兼容目标为ES5环境，当使用ES6特性时，会自动使用对应的polyfill进行转换 */
+                    "useBuiltIns": "usage",
+                    "corejs": 3
+                  }]],
+                  plugins: [
+                    [
+                      /** 用来抽离babel转换代码前面插入的helpers代码 */
+                      '@babel/plugin-transform-runtime',
+                      {
+                        /** preset-env 已包含不污染全局的转换器 */
+                        regenerator: false
+                      }
+                    ]
+                  ],
+                  /** 是否缓存目录，开启该项可以加速babel编译速度 */
+                  /** 不开启对缓存的压缩，会多占运存，减少磁盘占用，但运存显然更重要 */
+                  cacheDirectory: true,
+                  cacheCompression: false
+                }
+              }
+            ]
+          },
+          /** 处理样式 */
           {
             test: /\.css$/i,
             use: ['style-loader', 'css-loader']

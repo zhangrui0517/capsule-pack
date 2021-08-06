@@ -10,6 +10,7 @@ compiler.run((err, stats) => {
    */
   if(err || stats.hasErrors()) {
     console.log('ERROR: ', err || stats.hasErrors())
+    console.log(stats.toJson())
   } else {
     const statsJSON = stats.toJson()
     // console.log('statsJSON: ',statsJSON)
