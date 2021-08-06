@@ -6,7 +6,8 @@ const WebpackDevServer = require('webpack-dev-server');
 
 const server = new WebpackDevServer(compiler, {
   contentBase: './dist',
-  compress: true
+  compress: true,
+  hot: true
 })
 
 server.listen(8080, "127.0.0.1", () => {

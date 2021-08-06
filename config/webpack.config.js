@@ -1,10 +1,12 @@
 const path = require('path')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
-    index: './src/index.js'
+    index: './src/index.tsx'
   },
   output: {
     filename: '[name].[contenthash].js',
@@ -18,19 +20,19 @@ module.exports = {
     // },
   },
   module: {
-    rules: [
-      {
-        oneOf: [
-          /** 处理JS，如转换ES6代码为ES5 */
-          {
-            test: /\.(jsx|js|ts|tsx)$/i,
-            include: /(src)/,
-            exclude: /(node_modules)/,
-            use: [
-              {
-                loader: 'babel-loader',
-                options: {
-                  presets: [['@babel/preset-env', {
+    rules: [{
+      oneOf: [
+        /** 处理JS，如转换ES6代码为ES5 */
+        {
+          test: /\.(jsx|js|ts|tsx)$/i,
+          include: /(src)/,
+          exclude: /(node_modules)/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  ['@babel/preset-env', {
                     "targets": {
                       /** 目标浏览器 */
                       browsers: [
@@ -40,70 +42,117 @@ module.exports = {
                     /** 在兼容目标为ES5环境，当使用ES6特性时，会自动使用对应的polyfill进行转换 */
                     "useBuiltIns": "usage",
                     "corejs": 3
-                  }]],
-                  plugins: [
-                    [
-                      /** 用来抽离babel转换代码前面插入的helpers代码 */
-                      '@babel/plugin-transform-runtime',
-                      {
-                        /** preset-env 已包含不污染全局的转换器 */
-                        regenerator: false
-                      }
-                    ]
-                  ],
-                  /** 是否缓存目录，开启该项可以加速babel编译速度 */
-                  /** 不开启对缓存的压缩，会多占运存，减少磁盘占用，但运存显然更重要 */
-                  cacheDirectory: true,
-                  cacheCompression: false
-                }
+                  }],
+                  ['@babel/preset-react']
+                ],
+                plugins: [
+                  [
+                    /** 用来抽离babel转换代码前面插入的helpers代码 */
+                    '@babel/plugin-transform-runtime',
+                    {
+                      /** preset-env 已包含不污染全局的转换器 */
+                      regenerator: false
+                    }
+                  ]
+                ],
+                /** 是否缓存目录，开启该项可以加速babel编译速度 */
+                cacheDirectory: true,
+                /** 不开启对缓存的压缩，会多占运存，减少磁盘占用，但运存显然更重要 */
+                cacheCompression: false
               }
-            ]
-          },
-          /** 处理样式 */
-          {
-            test: /\.css$/i,
-            use: ['style-loader', 'css-loader']
-          },
-          /** 处理图片资源 */
-          {
-            test: /\.(png|svg|jpg|jpeg|gif)$/i,
-            /** 不指定具体类型时，webpack会自动在resource（file-loader）和inline（url-loader）之间选择 */
-            type: 'asset',
-            /** 自定义文件名称 */
-            generator: {
-              filename: 'static/images/[name]-[hash][ext][query]'
             },
-            parser: {
-              dataUrlCondition: {
-                maxSize: 4 * 1024
+            {
+              loader: 'ts-loader',
+              options: {
+                /** 关闭类型检查，由fork-ts-checker-webpack-plugin单独开一个线程做类型检查 */
+                transpileOnly: true
               }
             }
-          },
-          /** 处理字体资源 */
-          {
-            test: /\.(woff|woff2|eot|ttf|otf)$/i,
-            type: 'asset/resource',
-            generator: {
-              filename: 'static/fonts/[name]-[hash][ext][query]'
+          ]
+        },
+        /** 处理样式 */
+        {
+          test: /\.s[ac]ss$/i,
+          // use: ['style-loader', 'css-loader', 'sass-loader']
+          use: [
+            /** MiniCssExtractPlugin.loader 提取css到单独的文件中 */
+            MiniCssExtractPlugin.loader,
+            /** 解析css文件 */
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2
+              }
             },
+            /** 对css进行处理，如补全前缀 */
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    require('postcss-preset-env')({
+                      browsers: [
+                        "ie >= 9",
+                        "Chrome >= 21",
+                        "Firefox >= 1",
+                        "Edge >= 13",
+                        "last 3 versions"
+                      ],
+                    })
+                  ],
+                },
+              },
+            },
+            /** 解析scss文件 */
+            'sass-loader'
+          ]
+        },
+        /** 处理图片资源 */
+        {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          /** 不指定具体类型时，webpack会自动在resource（file-loader）和inline（url-loader）之间选择 */
+          type: 'asset',
+          /** 自定义文件名称 */
+          generator: {
+            filename: 'static/images/[name]-[hash][ext][query]'
           },
-          /** 处理内联文件 */
-          {
-            resourceQuery: /raw/,
-            type: 'asset/source',
-            generator: {
-              filename: 'static/raw/[name]-[hash][ext][query]'
+          parser: {
+            dataUrlCondition: {
+              maxSize: 4 * 1024
             }
           }
-        ]
-      }
-    ]
+        },
+        /** 处理字体资源 */
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'static/fonts/[name]-[hash][ext][query]'
+          },
+        },
+        /** 处理内联文件 */
+        {
+          resourceQuery: /raw/,
+          type: 'asset/source',
+          generator: {
+            filename: 'static/raw/[name]-[hash][ext][query]'
+          }
+        }
+      ]
+    }]
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
-    })
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css'
+    }),
+    new ForkTsCheckerWebpackPlugin({})
   ],
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', 'jsx'],
+  },
   optimization: {
     runtimeChunk: 'single',
     moduleIds: 'deterministic',
