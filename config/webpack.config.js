@@ -2,15 +2,17 @@ const path = require('path')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const WebpackBar = require('webpackbar')
+// const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 module.exports = {
-  mode: process.env.NODE_ENV,
+  mode: process.env.NODE_ENV || 'development',
   entry: {
     index: './src/index.tsx'
   },
   output: {
     filename: '[name].[contenthash].js',
-    path: path.resolve(process.env.BUNDLE_PREFIX_PATH, 'dist'),
+    path: path.resolve(process.env.BUNDLE_PREFIX_PATH || __dirname, 'dist'),
     clean: true,
     /** 如果要打包一个js library */
     // library: {
@@ -142,13 +144,21 @@ module.exports = {
     }]
   },
   plugins: [
+    /** HTML模板 */
     new HtmlWebpackPlugin({
       template: './src/index.html',
     }),
+    /** 提取样式文件 */
     new MiniCssExtractPlugin({
       filename: '[name].css'
     }),
-    new ForkTsCheckerWebpackPlugin({})
+    /** ts 类型检查（额外线程，加快打包速度） */
+    new ForkTsCheckerWebpackPlugin({}),
+    /** 进度条 */
+    new WebpackBar({
+      color: '#4285f4'
+    }),
+    // new FriendlyErrorsWebpackPlugin()
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js', 'jsx'],

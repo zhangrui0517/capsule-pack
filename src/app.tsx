@@ -1,8 +1,11 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
+import img from './asset/image/cat.jpg'
 
 const App: FC = () => {
   return (
-    <div>App</div>
+    <div>
+      <img src={img} />
+    </div>
   )
 }
 
