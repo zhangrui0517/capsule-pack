@@ -3,7 +3,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const WebpackBar = require('webpackbar')
-// const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
@@ -158,8 +157,7 @@ module.exports = {
     /** 进度条 */
     new WebpackBar({
       color: '#4285f4'
-    }),
-    // new FriendlyErrorsWebpackPlugin()
+    })
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js', 'jsx'],
