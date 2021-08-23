@@ -8,7 +8,8 @@ const WebpackBar = require('webpackbar')
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
-    index: './src/index.tsx'
+    index: './src/index.tsx',
+    index2: './src/index2.tsx'
   },
   output: {
     filename: '[name].[contenthash].js',

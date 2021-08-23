@@ -1663,6 +1663,14 @@ chalk@^4.1.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+chalk@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.nlark.com/chalk/download/chalk-4.1.2.tgz?cache=0&sync_timestamp=1627646697260&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fchalk%2Fdownload%2Fchalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"
+  integrity sha1-qsTit3NKdAhnrrFr8CqtVWoeegE=
+  dependencies:
+    ansi-styles "^4.1.0"
+    supports-color "^7.1.0"
+
 "chokidar@>=2.0.0 <4.0.0", "chokidar@>=3.0.0 <4.0.0", chokidar@^3.4.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.2.tgz#dba3976fcadb016f66fd365021d91600d01c1e75"
@@ -1838,6 +1846,13 @@ consola@^2.15.0:
   version "2.15.3"
   resolved "https://registry.npm.taobao.org/consola/download/consola-2.15.3.tgz#2e11f98d6a4be71ff72e0bdf07bd23e12cb61550"
   integrity sha1-LhH5jWpL5x/3LgvfB70j4Sy2FVA=
+
+console-table-printer@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.nlark.com/console-table-printer/download/console-table-printer-2.10.0.tgz#4a6875b95071b36542d1c55c6d9dcc6206e1e9f0"
+  integrity sha1-Smh1uVBxs2VC0cVcbZ3MYgbh6fA=
+  dependencies:
+    simple-wcswidth "^1.0.1"
 
 content-disposition@0.5.3:
   version "0.5.3"
@@ -4879,6 +4894,11 @@ signal-exit@^3.0.0, signal-exit@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
   integrity sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA==
+
+simple-wcswidth@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/simple-wcswidth/download/simple-wcswidth-1.0.1.tgz#8ab18ac0ae342f9d9b629604e54d2aa1ecb018b2"
+  integrity sha1-irGKwK40L52bYpYE5U0qoeywGLI=
 
 snapdragon-node@^2.0.1:
   version "2.1.1"
