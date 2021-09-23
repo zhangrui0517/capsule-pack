@@ -1,8 +1,8 @@
 require('../config/.env')('production')
 const webpack = require('webpack')
-const webpackConfig = require('../config/webpack.config')
+const webpackProdConfig = require('../config/webpack.prod')
 const webpackReport = require('./report')
-const compiler = webpack(webpackConfig)
+const compiler = webpack(webpackProdConfig)
 
 compiler.run((err, stats) => {
   webpackReport(stats)

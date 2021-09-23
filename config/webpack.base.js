@@ -1,14 +1,12 @@
-const path = require('path')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const WebpackBar = require('webpackbar')
+const path = require('path')
 
 module.exports = {
-  mode: process.env.NODE_ENV || 'development',
   entry: {
-    index: './src/index.tsx',
-    index2: './src/index2.tsx'
+    index: './src/index'
   },
   output: {
     filename: '[name].[contenthash].js',
@@ -20,6 +18,9 @@ module.exports = {
     //   /** 包适配的规范 */
     //   type: 'umd',
     // },
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', 'jsx'],
   },
   module: {
     rules: [{
@@ -159,9 +160,6 @@ module.exports = {
       color: '#4285f4'
     })
   ],
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js', 'jsx'],
-  },
   optimization: {
     runtimeChunk: 'single',
     moduleIds: 'deterministic',
