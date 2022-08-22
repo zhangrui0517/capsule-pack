@@ -1,9 +1,10 @@
 import { Configuration } from 'webpack'
 import baseConfig from './webpack.base'
 import { merge } from 'webpack-merge'
+import { mergeExtraWebpackConfig } from '../utils'
 
-const devConfig: Configuration = {
+const devConfig: Configuration = merge(baseConfig, {
   mode: 'development'
-}
+})
 
-export default merge(baseConfig, devConfig)
+export default mergeExtraWebpackConfig(devConfig)
