@@ -1,49 +1,46 @@
 {
-  "name": "capsule-webpack",
+  "name": "capsules-webpack",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
-  "repository": "https://github.com/snowleoz/capsule-webpack.git",
-  "author": "zhangrui <393394595@qq.com>",
-  "license": "MIT",
   "scripts": {
-    "build": "node ./scripts/build.js",
-    "dev": "node ./scripts/dev.js"
+    "start": "npx webpack --config ./config/webpack.dev.ts",
+    "build": "npx webpack --config ./config/webpack.prod.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snowleoz/capsules-webpack.git"
+  },
+  "keywords": [
+    "webapck"
+  ],
+  "author": "zhangrui",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/snowleoz/capsules-webpack/issues"
+  },
+  "homepage": "https://github.com/snowleoz/capsules-webpack#readme",
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/plugin-transform-runtime": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
-    "@babel/preset-react": "^7.14.5",
-    "@types/react": "^17.0.16",
-    "@types/react-dom": "^17.0.9",
-    "babel-loader": "^8.2.2",
-    "cache-loader": "^4.1.0",
-    "chalk": "^4.1.2",
-    "console-table-printer": "^2.10.0",
-    "css-loader": "^6.2.0",
-    "dart-sass": "^1.25.0",
-    "fork-ts-checker-webpack-plugin": "^6.3.1",
-    "html-webpack-plugin": "^5.3.2",
-    "mini-css-extract-plugin": "^2.2.0",
-    "postcss": "^8.3.6",
-    "postcss-loader": "^6.1.1",
-    "postcss-preset-env": "^6.7.0",
-    "sass": "^1.37.5",
-    "sass-loader": "^12.1.0",
-    "style-loader": "^3.2.1",
-    "thread-loader": "^3.0.4",
-    "ts-loader": "^9.2.5",
-    "typescript": "^4.3.5",
-    "webpack": "^5.47.0",
-    "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^3.11.2",
-    "webpackbar": "^5.0.0-3"
-  },
-  "dependencies": {
-    "@babel/polyfill": "^7.12.1",
-    "core-js": "^3.16.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "@types/node": "^18.7.8",
+    "@types/postcss-preset-env": "^7.7.0",
+    "@types/webpack": "^5.28.0",
+    "@types/webpack-dev-server": "^4.7.2",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.7.1",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.1",
+    "postcss": "^8.4.16",
+    "postcss-loader": "^7.0.1",
+    "postcss-preset-env": "^7.8.0",
+    "sass": "^1.54.5",
+    "sass-loader": "^13.0.2",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
     "webpack-merge": "^5.8.0"
-  }
+  },
+  "dependencies": {}
 }
