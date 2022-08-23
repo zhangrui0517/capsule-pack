@@ -19,8 +19,13 @@ const config: Configuration = {
     rules: [
       // 解析ts文件
       {
-        test: /\.ts$/,
-        use: 'ts-loader',
+        test: /\.(ts|tsx|js|jsx)$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-typescript', '@babel/preset-react', '@babel/preset-env'], 
+          },
+        },
         exclude: /node_modules/
       },
       // 解析样式文件

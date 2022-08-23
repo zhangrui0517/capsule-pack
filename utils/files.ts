@@ -41,7 +41,7 @@ export function importJs(path: string) {
     const a = require(path)
     return a
   } catch(err) {
-    console.log('no webpack.config.js exist')
+    console.error(err)
     return null
   }
 }
