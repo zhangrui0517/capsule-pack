@@ -1,9 +1,18 @@
 import { Configuration } from "webpack"
+import { Configuration as DevServerConfiguration } from 'webpack-dev-server'
 // plugins
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugins from 'html-webpack-plugin'
 // node api
 import path from 'path'
+
+const devServer: DevServerConfiguration = {
+  compress: true,
+  port: 8080,
+  static: {
+    directory: path.resolve(process.cwd(), './dist')
+  }
+}
 
 const config: Configuration = {
   entry: {
@@ -93,6 +102,7 @@ const config: Configuration = {
       filename: '[name].[contenthash:6].css'
     })
   ],
+  devServer,
   resolve: {
     extensions: ['.ts','.js','.tsx','.jsx']
   }
