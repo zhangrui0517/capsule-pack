@@ -2,6 +2,8 @@ import { Configuration } from "webpack"
 // plugins
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugins from 'html-webpack-plugin'
+import TerserWebpackPlugin from 'terser-webpack-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 // node api
 import path from 'path'
 
@@ -83,6 +85,34 @@ const config: Configuration = {
           filename: 'static/raw/[name]-[hash][ext][query]'
         }
       }
+    ]
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserWebpackPlugin({
+        parallel: true,
+        terserOptions: {
+          output: {
+            // 清除注释
+            comments: false,
+          },
+        },
+        // 不提取注释到另外的文件中
+        extractComments: false,
+      }),
+      new CssMinimizerPlugin({
+        parallel: true,
+        minimizerOptions: {
+          preset: [
+            'default',
+            {
+              // 清除注释
+              discardComments: { removeAll: true },
+            }
+          ],
+        }
+      })
     ]
   },
   plugins: [

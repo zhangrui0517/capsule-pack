@@ -1,7 +1,10 @@
 import { Configuration } from 'webpack'
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server'
+// node api
 import path from 'path'
+// config
 import baseConfig from './webpack.base'
+// utils
 import { merge } from 'webpack-merge'
 import { mergeExtraWebpackConfig } from '../utils'
 
