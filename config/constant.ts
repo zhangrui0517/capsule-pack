@@ -1,0 +1,1 @@
+export const contextPath = process.cwd()

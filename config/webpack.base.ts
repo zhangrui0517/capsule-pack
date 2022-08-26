@@ -1,33 +1,50 @@
-import { Configuration } from "webpack"
+import { Configuration, DllReferencePlugin } from "webpack"
 // plugins
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugins from 'html-webpack-plugin'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+// import CopyWebpackPlugin from 'copy-webpack-plugin'
+import AddAssetHtmlWebpackPlugin from 'add-asset-html-webpack-plugin'
 // node api
 import path from 'path'
+// utils
+import { contextPath } from './constant'
+
+// 当前执行路径
+
 
 const config: Configuration = {
   entry: {
-    index: path.resolve(process.cwd(), './src/index')
+    index: path.resolve(contextPath, './src/index')
   },
   output: {
     filename: '[name].[contenthash:6].js',
-    path: path.resolve(process.cwd(), './dist'),
+    path: path.resolve(contextPath, './dist'),
     // 清除上一次的构建产物
-    clean: true
+    clean: true,
+    publicPath:'./'
   },
   module: {
     rules: [
       // 解析ts文件
       {
         test: /\.(ts|tsx|js|jsx)$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-typescript', '@babel/preset-react', '@babel/preset-env'], 
+        use: [
+          {
+            loader: 'thread-loader',
+            options: {
+              worker: 2
+            }
           },
-        },
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: path.resolve(contextPath, './node_modules/.cache/babel-cache'),
+              presets: ['@babel/preset-typescript', '@babel/preset-react', '@babel/preset-env'], 
+            },
+          },
+        ],
         exclude: /node_modules/
       },
       // 解析样式文件
@@ -87,9 +104,49 @@ const config: Configuration = {
       }
     ]
   },
+  plugins: [
+    new HtmlWebpackPlugins({
+      template: path.resolve(contextPath, './src/index.html')
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash:6].css'
+    }),
+    new DllReferencePlugin({
+      context: contextPath,
+      manifest: path.resolve(contextPath, './dlls/react-manifest.json')
+    }),
+    // new CopyWebpackPlugin({
+    //   patterns: [{
+    //     from: path.resolve(contextPath, './dlls/react.dll.js'),
+    //     to: path.resolve(contextPath, './dist')
+    //   }]
+    // }),
+    new AddAssetHtmlWebpackPlugin({
+      filepath: path.resolve(contextPath, './dlls/react.dll.js')
+    })
+  ],
+  resolve: {
+    extensions: ['.ts','.js','.tsx','.jsx']
+  },
   optimization: {
     minimize: true,
+    splitChunks: {
+      chunks: 'all',
+      name: 'common',
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+        }
+      }
+    },
     minimizer: [
+      // 压缩js
       new TerserWebpackPlugin({
         parallel: true,
         terserOptions: {
@@ -101,6 +158,7 @@ const config: Configuration = {
         // 不提取注释到另外的文件中
         extractComments: false,
       }),
+      // 压缩css
       new CssMinimizerPlugin({
         parallel: true,
         minimizerOptions: {
@@ -114,17 +172,6 @@ const config: Configuration = {
         }
       })
     ]
-  },
-  plugins: [
-    new HtmlWebpackPlugins({
-      template: path.resolve(process.cwd(), './src/index.html')
-    }),
-    new MiniCssExtractPlugin({
-      filename: '[name].[contenthash:6].css'
-    })
-  ],
-  resolve: {
-    extensions: ['.ts','.js','.tsx','.jsx']
   }
 }
 

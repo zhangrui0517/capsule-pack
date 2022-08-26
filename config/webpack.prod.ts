@@ -9,4 +9,4 @@ const prodConfig: Configuration = merge(baseConfig, {
   mode: 'production',
 })
 
-export default mergeExtraWebpackConfig(prodConfig)
+export default mergeExtraWebpackConfig(prodConfig) 
