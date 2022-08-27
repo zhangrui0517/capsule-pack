@@ -10,9 +10,9 @@ import { mergeExtraWebpackConfig } from '../utils'
 
 const devServer: DevServerConfiguration = {
   compress: true,
-  port: 8080,
+  port: 8800,
   static: {
-    directory: path.resolve(process.cwd(), './dist')
+    directory: path.resolve(process.cwd(), './dist'),
   }
 }
 

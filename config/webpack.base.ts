@@ -4,15 +4,11 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugins from 'html-webpack-plugin'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-// import CopyWebpackPlugin from 'copy-webpack-plugin'
 import AddAssetHtmlWebpackPlugin from 'add-asset-html-webpack-plugin'
 // node api
 import path from 'path'
 // utils
 import { contextPath } from './constant'
-
-// 当前执行路径
-
 
 const config: Configuration = {
   entry: {
@@ -23,7 +19,6 @@ const config: Configuration = {
     path: path.resolve(contextPath, './dist'),
     // 清除上一次的构建产物
     clean: true,
-    publicPath:'./'
   },
   cache: {
     type: 'filesystem',
@@ -36,10 +31,7 @@ const config: Configuration = {
         test: /\.(ts|tsx|js|jsx)$/,
         use: [
           {
-            loader: 'thread-loader',
-            options: {
-              worker: 2
-            }
+            loader: 'thread-loader'
           },
           {
             loader: 'babel-loader',
@@ -142,14 +134,9 @@ const config: Configuration = {
       context: contextPath,
       manifest: path.resolve(contextPath, './dlls/react-manifest.json')
     }),
-    // new CopyWebpackPlugin({
-    //   patterns: [{
-    //     from: path.resolve(contextPath, './dlls/react.dll.js'),
-    //     to: path.resolve(contextPath, './dist')
-    //   }]
-    // }),
     new AddAssetHtmlWebpackPlugin({
-      filepath: path.resolve(contextPath, './dlls/react.dll.js')
+      filepath: path.resolve(contextPath, './dlls/react.dll.js'),
+      publicPath: './'
     })
   ],
   resolve: {
