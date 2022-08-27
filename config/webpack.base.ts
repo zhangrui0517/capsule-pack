@@ -25,6 +25,10 @@ const config: Configuration = {
     clean: true,
     publicPath:'./'
   },
+  cache: {
+    type: 'filesystem',
+    cacheDirectory: path.resolve(contextPath, './node_modules/.cache/webpack')
+  },
   module: {
     rules: [
       // 解析ts文件
@@ -74,6 +78,29 @@ const config: Configuration = {
       // 处理图片资源
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        use: [
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+              },
+              optipng: {
+                enabled: false,
+              },
+              pngquant: {
+                quality: [0.65, 0.90],
+                speed: 4
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              webp: {
+                quality: 75
+              }
+            }
+          }
+        ],
         // 不指定具体类型时，webpack会自动在resource（file-loader）和inline（url-loader）之间选择
         type: 'asset',
         // 自定义文件名称
