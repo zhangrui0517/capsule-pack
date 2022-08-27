@@ -2,3 +2,11 @@
 body {
   background: url('./image/we.jpeg')
 }
+
+test {
+  color: red;
+}
+
+#root {
+  color: red;
+}

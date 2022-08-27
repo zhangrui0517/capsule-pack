@@ -5,6 +5,8 @@ import HtmlWebpackPlugins from 'html-webpack-plugin'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import AddAssetHtmlWebpackPlugin from 'add-asset-html-webpack-plugin'
+import PurgeCSSPlugin from 'purgecss-webpack-plugin'
+import glob from 'glob'
 // node api
 import path from 'path'
 // utils
@@ -128,7 +130,10 @@ const config: Configuration = {
       template: path.resolve(contextPath, './src/index.html')
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash:6].css'
+      filename: '[name].[hash:6].css'
+    }),
+    new PurgeCSSPlugin({
+      paths: glob.sync(`${contextPath}/test/**/*`,  { nodir: true }),
     }),
     new DllReferencePlugin({
       context: contextPath,

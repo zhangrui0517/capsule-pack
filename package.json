@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx webpack --config ./config/webpack.dev.ts",
+    "dev-watch": "npx webpack --config ./config/webpack.dev.ts --watch",
     "dev-server": "npx webpack serve --config ./config/webpack.dev.ts",
     "build": "npx webpack --config ./config/webpack.prod.ts",
     "dll": "npx webpack --config ./config/webpack.dll.ts"
@@ -39,12 +40,14 @@
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^4.0.0",
+    "glob": "^8.0.3",
     "html-webpack-plugin": "^5.5.0",
     "image-webpack-loader": "^8.1.0",
     "mini-css-extract-plugin": "^2.6.1",
     "postcss": "^8.4.16",
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.8.0",
+    "purgecss-webpack-plugin": "^4.1.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.54.5",
