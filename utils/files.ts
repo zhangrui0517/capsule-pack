@@ -38,8 +38,8 @@ export function mergeExtraWebpackConfig (webpackConfig: Configuration) {
  */
 export function importJs(path: string) {
   try {
-    const a = require(path)
-    return a
+    const module = require(path)
+    return module
   } catch(err) {
     console.error(err)
     return null
