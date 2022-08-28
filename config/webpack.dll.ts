@@ -1,7 +1,7 @@
 import path from 'path'
 import { DllPlugin, Configuration } from 'webpack'
 // utils
-import { contextPath } from './constant'
+import { dllDirPath, contextPath } from '../utils'
 
 const dllConfig: Configuration = {
   mode: 'production',
@@ -9,18 +9,18 @@ const dllConfig: Configuration = {
     extensions: ['.js', '.jsx']
   },
   entry: {
-    react: ['react', 'react-dom']
+    react: ['react', 'react-dom'],
   },
   output: {
-    path: path.resolve(contextPath, './dlls'),
+    path: dllDirPath,
     filename: '[name].dll.js',
-    library: '[name]'
+    library: '[name]_[fullhash]'
   },
   plugins: [
     new DllPlugin({
-      path: path.resolve(contextPath, './dlls', '[name]-manifest.json'),
-      name: '[name]',
-      context: process.cwd(),
+      path: path.resolve(dllDirPath, '[name]-manifest.json'),
+      name: '[name]_[fullhash]',
+      context: contextPath,
       entryOnly: true
     })
   ]

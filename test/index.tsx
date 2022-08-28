@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Bar from './bar'
-import './index.css'
+import './index.scss'
 
 const App = () => {
   return (
     <div>
+      Hello world
       <Bar/>
     </div>
   )

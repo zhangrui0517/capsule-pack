@@ -1,24 +1,28 @@
 import { Configuration } from 'webpack'
 import { Configuration as DevServerConfiguration } from 'webpack-dev-server'
-// node api
-import path from 'path'
 // config
-import baseConfig from './webpack.base'
+import getBaseConfig from './webpack.base'
 // utils
 import { merge } from 'webpack-merge'
-import { mergeExtraWebpackConfig } from '../utils'
+import { outputDirPath, getCustomWebpack } from '../utils'
 
 const devServer: DevServerConfiguration = {
   compress: true,
   port: 8800,
   static: {
-    directory: path.resolve(process.cwd(), './dist'),
+    directory: outputDirPath,
   }
 }
 
-const devConfig: Configuration = merge(baseConfig, {
-  mode: 'development',
-  devServer
-})
+function devConfig (): Configuration {
+  const customWebpackConfig = getCustomWebpack() || {}
+  const { config, ...otherConfig } = customWebpackConfig
+  const baseConfig = getBaseConfig(otherConfig)
+  const devConfig = merge(baseConfig, {
+    mode: 'development',
+    devServer
+  })
+  return config ? config(devConfig) : devConfig
+}
 
-export default mergeExtraWebpackConfig(devConfig)
+export default devConfig
