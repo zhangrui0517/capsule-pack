@@ -1,8 +1,6 @@
 // node api
 import fs from 'fs'
 import path from 'path'
-// util
-import glob, { IOptions } from 'glob'
 import { contextPath } from './'
 // types
 import { CustomConfig } from '../types'
@@ -50,21 +48,4 @@ export function getCustomWebpack (): CustomConfig | null {
     return importJs(jsConfigPath)?.default || null
   }
   return null
-}
-
-/** 
- * 检查指定目录中是否存在指定文件
- */
-export function existFile (dir: string, filename: string, options?: IOptions) {
-  return glob.sync(`${dir}/${filename}`, {
-    nodir: true,
-    ...options
-  })
-}
-
-/** 检查是否存在指定目录 */
-export function existDir (dir: string, dirName: string, options?: IOptions) {
-  return glob.sync(`${dir}/${dirName}`, {
-    ...options
-  })
 }

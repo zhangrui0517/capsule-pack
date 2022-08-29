@@ -1,14 +1,14 @@
-import { Configuration, DllReferencePlugin } from "webpack"
+import { Configuration } from "webpack"
 // plugins
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugins from 'html-webpack-plugin'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import AddAssetHtmlWebpackPlugin from 'add-asset-html-webpack-plugin'
+import webpackBar from 'webpackBar'
 // node api
 import path from 'path'
 // utils
-import { contextPath, cacheDirPath, dllDirPath } from '../utils'
+import { contextPath, cacheDirPath } from '../utils'
 // types
 import { CustomExtraConfig } from '../types'
 
@@ -134,14 +134,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       new MiniCssExtractPlugin({
         filename: '[name].[fullhash:6].css'
       }),
-      new DllReferencePlugin({
-        context: contextPath,
-        manifest: path.resolve(dllDirPath, './react-manifest.json')
-      }),
-      new AddAssetHtmlWebpackPlugin({
-        filepath: path.resolve(dllDirPath, './react.dll.js'),
-        publicPath: './'
-      })
+      new webpackBar()
     ],
     resolve: {
       extensions: ['.ts','.js','.tsx','.jsx']
