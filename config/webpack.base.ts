@@ -137,7 +137,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       new webpackBar()
     ],
     resolve: {
-      extensions: ['.ts','.js','.tsx','.jsx']
+      extensions: ['.ts','.tsx','.js','.jsx']
     },
     optimization: {
       minimize: true,
