@@ -13,6 +13,9 @@
     "type": "git",
     "url": "git+https://github.com/snowleoz/capsules-webpack.git"
   },
+  "bin": {
+    "cpack": "./bin/index.js"
+  },
   "keywords": [
     "webapck"
   ],
@@ -61,5 +64,9 @@
     "webpack-merge": "^5.8.0",
     "webpackbar": "^5.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "commander": "^9.4.0",
+    "fs-extra": "^10.1.0",
+    "inquirer": "^9.1.1"
+  }
 }
