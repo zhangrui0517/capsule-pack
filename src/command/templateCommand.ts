@@ -1,14 +1,8 @@
-const fs = require('fs-extra')
-const { cTemplateProjectPath, rootPath, packageJson, currentTemplatePath, cwdPath } = require('./path')
+import fs from 'fs-extra'
+import { Command } from 'commander'
+import { cTemplateProjectPath, packageJson, currentTemplatePath, cwdPath } from './path'
 
-const child_process = require('child_process')
-child_process.exec('npm root', (err, stdout, strerr) => {
-  console.log('err: ',err)
-  console.log('stdout: ',stdout)
-  console.log('strerr: ',strerr)
-})
-
-function templateCommand (program) {
+function templateCommand (program: Command) {
   /** 创建项目 */
   program
     .command('create')
@@ -28,7 +22,7 @@ function templateCommand (program) {
           })
         }
       } catch (err) {
-        throw new Error(err)
+        throw new Error(err as string)
       }
     })
 
@@ -45,9 +39,9 @@ function templateCommand (program) {
           fs.copy(filePath, `${cwdPath}/${file}`)
         }
       } catch (err) {
-        throw new Error(err)
+        throw new Error(err as string)
       }
     })
 }
 
-module.exports = templateCommand
+export default templateCommand

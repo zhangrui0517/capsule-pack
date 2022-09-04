@@ -1,7 +1,7 @@
 // node api
 import fs from 'fs'
 import path from 'path'
-import { contextPath } from './'
+import { contextPath } from '.'
 // types
 import { CustomConfig } from '../types'
 
@@ -36,7 +36,7 @@ export function importJs(path: string) {
 
 /** 获取自定义webpack配置 */
 export function getCustomWebpack (): CustomConfig | null {
-  const tsConfigPath = path.resolve(contextPath, 'webpack.custom.ts')
+  const tsConfigPath = path.resolve(contextPath, './lib/webpack.custom.js')
   // 先查找是否存在ts格式的webpack配置，没有再查找js格式的配置
   const hasTsConfig = fs.existsSync(tsConfigPath)
   if(hasTsConfig) {

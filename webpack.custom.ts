@@ -1,6 +1,6 @@
 // import path from 'path'
 // import HtmlWebpackPlugins from 'html-webpack-plugin'
-import { CustomConfig } from './types'
+import { CustomConfig } from './src/types'
 
 const config: CustomConfig = {
   root: 'test',
