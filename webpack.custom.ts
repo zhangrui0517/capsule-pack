@@ -4,6 +4,7 @@ import { CustomConfig } from './types'
 
 const config: CustomConfig = {
   root: 'test',
+  dynamicPolyfill: true
   // 覆盖 webpack config
   // config: (webpackConfig) => {
   //   webpackConfig.plugins![0] = new HtmlWebpackPlugins({

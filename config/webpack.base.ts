@@ -9,12 +9,13 @@ import webpackBar from 'webpackBar'
 import path from 'path'
 // utils
 import { contextPath, cacheDirPath } from '../utils'
+import { polyfillInsert } from './webpack.util'
 // types
 import { CustomExtraConfig } from '../types'
 
 function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
   const { root = 'src' } = extraConfig
-  return {
+  const config: Configuration = {
     entry: {
       index: path.resolve(contextPath, `./${root}/index`)
     },
@@ -185,6 +186,8 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       ]
     }
   }
+  polyfillInsert(extraConfig, config)
+  return config
 }
 
 export default getBaseConfig
