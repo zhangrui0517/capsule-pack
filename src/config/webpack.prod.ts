@@ -6,7 +6,7 @@ import getBaseConfig from './webpack.base'
 // utils
 import glob from 'glob'
 import { merge } from 'webpack-merge'
-import { getCustomWebpack, contextPath } from '../utils'
+import { getCustomWebpack, rootPath } from '../utils'
 
 function prodConfig (): Configuration {
   const customWebpackConfig = getCustomWebpack() || {}
@@ -17,7 +17,7 @@ function prodConfig (): Configuration {
     mode: 'production',
     plugins: [
       new PurgeCSSPlugin({
-        paths: glob.sync(`${contextPath}/${root}/**/*`,  { nodir: true }),
+        paths: glob.sync(`${rootPath}/${root}/**/*`,  { nodir: true }),
       }),
     ]
   })

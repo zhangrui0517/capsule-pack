@@ -8,7 +8,7 @@ import webpackBar from 'webpackBar'
 // node api
 import path from 'path'
 // utils
-import { contextPath, cacheDirPath } from '../utils'
+import { rootPath, cacheDirPath } from '../utils'
 import { polyfillInsert } from './webpack.util'
 // types
 import { CustomExtraConfig } from '../types'
@@ -17,11 +17,11 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
   const { root = 'src' } = extraConfig
   const config: Configuration = {
     entry: {
-      index: path.resolve(contextPath, `./${root}/index`)
+      index: path.resolve(rootPath, `./${root}/index`)
     },
     output: {
       filename: '[name].[contenthash:6].js',
-      path: path.resolve(contextPath, './dist'),
+      path: path.resolve(rootPath, './dist'),
       // 清除上一次的构建产物
       clean: true,
     },
@@ -130,7 +130,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
     },
     plugins: [
       new HtmlWebpackPlugins({
-        template: path.resolve(contextPath, `./${root}/index.html`)
+        template: path.resolve(rootPath, `./${root}/index.html`)
       }),
       new MiniCssExtractPlugin({
         filename: '[name].[fullhash:6].css'
