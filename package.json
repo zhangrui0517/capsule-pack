@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "tsc-watch": "npx tsc --watch -p ./tsconfig.json",
-    "tsc": "npx tsc -p ./tsconfig.json",
+    "tsc": "node ./script/clean.js & npx tsc -p ./tsconfig.json",
     "dev": "npx webpack --config ./src/config/webpack.dev.ts",
     "dev-watch": "npx webpack --config ./src/config/webpack.dev.ts --watch",
     "dev-server": "npx webpack serve --config ./src/config/webpack.dev.ts",
