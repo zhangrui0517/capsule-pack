@@ -23,3 +23,16 @@ export function polyfillInsert(extraConfig: CustomExtraConfig, config: Configura
   }
   return config
 }
+
+/** 根据参数生成babel要加载的预置编译器 */
+export function babelPresetGenerator(extraConfig: CustomExtraConfig) {
+  const { react = true } = extraConfig
+  const presetResult = [
+    '@babel/preset-typescript',
+    '@babel/preset-env'
+  ]
+  if(react) {
+    presetResult.push('@babel/preset-react')
+  }
+  return presetResult
+}

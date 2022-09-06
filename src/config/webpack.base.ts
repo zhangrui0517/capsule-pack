@@ -9,12 +9,14 @@ import webpackBar from 'webpackBar'
 import path from 'path'
 // utils
 import { rootPath, cacheDirPath } from '../utils'
-import { polyfillInsert } from './webpack.util'
+import { polyfillInsert, babelPresetGenerator } from './webpack.util'
 // types
 import { CustomExtraConfig } from '../types'
 
 function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
   const { root = 'src' } = extraConfig
+  /** 生成babel preset */
+  const babelPreset = babelPresetGenerator(extraConfig)
   const config: Configuration = {
     entry: {
       index: path.resolve(rootPath, `./${root}/index`)
@@ -42,7 +44,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
               loader: 'babel-loader',
               options: {
                 cacheDirectory: path.resolve(cacheDirPath, '.babel-cache'),
-                presets: ['@babel/preset-typescript', '@babel/preset-react', '@babel/preset-env'], 
+                presets: babelPreset, 
               },
             },
           ],

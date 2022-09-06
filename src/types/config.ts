@@ -6,6 +6,8 @@ export type CustomConfig = {
 } & CustomExtraConfig
 
 export type CustomExtraConfig = {
+  /** 是否开启react支持, 默认为true */
+  react?: boolean
   /** 要打包的目录，默认为src */
   root?: string
   /** 是否需要动态polyfill，默认关闭，开启默认使用jsdelivr CDN */
