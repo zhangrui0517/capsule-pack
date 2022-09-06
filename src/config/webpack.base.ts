@@ -110,6 +110,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       new webpackBar()
     ],
     resolve: {
+      modules: [path.resolve(rootPath, 'node_modules')],
       extensions: ['.ts','.tsx','.js','.jsx']
     },
     optimization: {
