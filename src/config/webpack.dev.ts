@@ -20,7 +20,35 @@ function devConfig (): Configuration {
   const baseConfig = getBaseConfig(otherConfig)
   const devConfig = merge(baseConfig, {
     mode: 'development',
-    devServer
+    devServer,
+    module: {
+      rules: [
+        // 解析样式文件
+        {
+          test: /\.(scss|css)$/,
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2
+              }
+            }, 
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    'postcss-preset-env'
+                  ]
+                }
+              }
+            },
+            'sass-loader'
+          ]
+        },
+      ]
+    }
   })
   return config ? config(devConfig) : devConfig
 }

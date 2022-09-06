@@ -1,9 +1,6 @@
 import { Configuration } from "webpack"
 // plugins
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import HtmlWebpackPlugins from 'html-webpack-plugin'
-import TerserWebpackPlugin from 'terser-webpack-plugin'
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import webpackBar from 'webpackBar'
 // node api
 import path from 'path'
@@ -49,30 +46,6 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
             },
           ],
           exclude: /node_modules/
-        },
-        // 解析样式文件
-        {
-          test: /\.(scss|css)$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2
-              }
-            }, 
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  plugins: [
-                    'postcss-preset-env'
-                  ]
-                }
-              }
-            },
-            'sass-loader'
-          ]
         },
         // 处理图片资源
         {
@@ -134,9 +107,6 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       new HtmlWebpackPlugins({
         template: path.resolve(rootPath, `./${root}/index.html`)
       }),
-      new MiniCssExtractPlugin({
-        filename: '[name].[fullhash:6].css'
-      }),
       new webpackBar()
     ],
     resolve: {
@@ -158,36 +128,10 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
             reuseExistingChunk: true
           }
         }
-      },
-      minimizer: [
-        // 压缩js
-        new TerserWebpackPlugin({
-          parallel: true,
-          terserOptions: {
-            output: {
-              // 清除注释
-              comments: false,
-            },
-          },
-          // 不提取注释到另外的文件中
-          extractComments: false,
-        }),
-        // 压缩css
-        new CssMinimizerPlugin({
-          parallel: true,
-          minimizerOptions: {
-            preset: [
-              'default',
-              {
-                // 清除注释
-                discardComments: { removeAll: true },
-              }
-            ],
-          }
-        })
-      ]
+      }
     }
   }
+  /** 根据参数按需插入polyfill脚本 */
   polyfillInsert(extraConfig, config)
   return config
 }
