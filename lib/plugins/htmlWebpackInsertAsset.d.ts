@@ -1,4 +1,4 @@
-import { Compiler } from "webpack";
+import { Compiler } from 'webpack';
 export declare type Options = Array<{
     tag: 'meta' | 'script' | 'link';
     attributes: {
