@@ -1,5 +1,5 @@
 import HtmlWebpackPlugins from 'html-webpack-plugin'
-import { Compiler, Compilation } from "webpack";
+import { Compiler, Compilation } from 'webpack'
 
 export type Options = Array<{
   tag: 'meta' | 'script' | 'link'

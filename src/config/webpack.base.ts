@@ -1,19 +1,17 @@
-import { Configuration } from "webpack"
+import { Configuration } from 'webpack'
 // plugins
 import HtmlWebpackPlugins from 'html-webpack-plugin'
-import webpackBar from 'webpackBar'
+// import webpackBar from 'webpackBar'
 // node api
 import path from 'path'
 // utils
 import { rootPath, cacheDirPath } from '../utils'
-import { polyfillInsert, babelPresetGenerator } from './webpack.util'
+import { polyfillInsert } from './webpack.util'
 // types
 import { CustomExtraConfig } from '../types'
 
 function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
   const { root = 'src' } = extraConfig
-  /** 生成babel preset */
-  const babelPreset = babelPresetGenerator(extraConfig)
   const config: Configuration = {
     entry: {
       index: path.resolve(rootPath, `./${root}/index`)
@@ -30,23 +28,6 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
     },
     module: {
       rules: [
-        // 解析ts文件
-        {
-          test: /\.(ts|tsx|js|jsx)$/,
-          use: [
-            {
-              loader: 'thread-loader'
-            },
-            {
-              loader: 'babel-loader',
-              options: {
-                cacheDirectory: path.resolve(cacheDirPath, '.babel-cache'),
-                presets: babelPreset, 
-              },
-            },
-          ],
-          exclude: /node_modules/
-        },
         // 处理图片资源
         {
           test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -107,7 +88,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       new HtmlWebpackPlugins({
         template: path.resolve(rootPath, `./${root}/index.html`)
       }),
-      new webpackBar()
+      // new webpackBar()
     ],
     resolve: {
       modules: [path.resolve(rootPath, 'node_modules')],
