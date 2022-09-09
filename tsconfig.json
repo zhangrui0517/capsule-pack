@@ -8,6 +8,7 @@
     "declaration": true, 
     /* 构建输出目录 */
     "outDir": "./lib",
+    /* 要构建的目录 */
     "rootDir": "./src",
     /* 强制区分大小写 */
     "forceConsistentCasingInFileNames": true,
@@ -30,5 +31,5 @@
   },
   "include": ["./src"],
   /* 不检查的目录 */
-  "exclude": ["node_modules","./test", "./lib", "./dist", "./template"]
+  "exclude": ["node_modules","./test", "./lib", "./dist", "./src/template"]
 }
