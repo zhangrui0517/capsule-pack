@@ -1,5 +1,5 @@
 {
-  "name": "capsules-pack",
+  "name": "capsule-pack",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/snowleoz/capsules-webpack.git"
+    "url": "git+https://github.com/snowleoz/capsule-webpack.git"
   },
   "bin": {
     "cpack": "./bin/index.js"
@@ -24,9 +24,9 @@
   "author": "zhangrui",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/snowleoz/capsules-webpack/issues"
+    "url": "https://github.com/snowleoz/capsule-webpack/issues"
   },
-  "homepage": "https://github.com/snowleoz/capsules-webpack#readme",
+  "homepage": "https://github.com/snowleoz/capsule-webpack#readme",
   "devDependencies": {
     "@babel/core": "^7.18.13",
     "@babel/preset-env": "^7.18.10",
