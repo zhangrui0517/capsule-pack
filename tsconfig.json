@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     /* 构建产物的规范 */
     "module": "commonjs",
@@ -10,24 +11,8 @@
     "outDir": "./lib",
     /* 要构建的目录 */
     "rootDir": "./src",
-    /* 强制区分大小写 */
-    "forceConsistentCasingInFileNames": true,
-    /* 是否删除注释 */
-    "removeComments": true,
-    /* 是否启用严格模式 */
-    "strict": true,
-    /* 在代码中注入'use strict' */
-    "alwaysStrict": true,
-    /* 检查是否有未使用的变量 */
-    "noUnusedLocals": true,
-    /* 检查是否有参数未使用 */
-    "noUnusedParameters": true,
-    /* 检查函数是否没有有效返回 */
-    "noImplicitReturns": true,
-    /* 使用索引访问时，将“未定义”添加到类型 */
-    "noUncheckedIndexedAccess": true,
-    /* 跳过对库文件的检查 */
-    "skipLibCheck": true
+    /* 是否不生成文件 */
+    "noEmit": false
   },
   "include": ["./src"],
   /* 不检查的目录 */

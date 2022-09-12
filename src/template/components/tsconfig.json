@@ -1,17 +1,8 @@
 {
+  "extends": "capsule-pack/tsconfig.base.js",
   "compilerOptions": {
     "target": "es2016",
     "module": "ES2015", 
-    "esModuleInterop": true, 
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "noImplicitThis": true, 
-    "noUnusedLocals": true,
-    "noUnusedParameters": true, 
-    "noImplicitReturns": true,
-    "skipLibCheck": true 
   },
   "include": ["./src"],
   "exclude": ["node_modules"]
