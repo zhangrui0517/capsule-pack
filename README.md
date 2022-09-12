@@ -1,2 +1,2 @@
-# capsules-webpack
+# capsule-webpack
 my webpack config
