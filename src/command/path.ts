@@ -12,6 +12,8 @@ export const packageJson = `${rootPath}/package.json`
 export const currentTemplatePath = `${rootPath}/template`
 
 // capsule-pack 的相关路径
-export const cPackPath = `${rootPath}/node_modules/capsules-pack`
+export const cPackPath = `${rootPath}/node_modules/capsule-pack/src`
 export const cTemplatePath = `${cPackPath}/template`
-export const cTemplateProjectPath = `${cTemplatePath}/project`
+
+/** 支持的项目创建类型 */
+export const supportCreateType = ['react', 'tools', 'components']

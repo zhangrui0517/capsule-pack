@@ -1,20 +1,29 @@
 import fs from 'fs-extra'
 import { Command } from 'commander'
-import { cTemplateProjectPath, packageJson, currentTemplatePath, cwdPath } from './path'
+import path from 'path'
+import { cTemplatePath, packageJson, currentTemplatePath, cwdPath, supportCreateType } from './path'
 
 function templateCommand (program: Command) {
   /** 创建项目 */
   program
     .command('create')
+    .argument('<type>')
     .description('用于快速创建开发环境，提供开发构建脚手架')
-    .action(async () => {
+    .action(async (type) => {
+      if(supportCreateType.indexOf(type) === -1) {
+        console.error('不支持的项目类型')
+        return
+      }
       try {
+        /** 检查是否存在package.json文件，如果不存在则直接创建 */
         const stat = await fs.stat(packageJson)
         if(stat) {
-          fs.copy(cTemplateProjectPath, cwdPath)
+          fs.copy(path.resolve(cTemplatePath, type), cwdPath)
           const editJson = await fs.readJSON(packageJson)
           editJson.scripts = editJson.scripts || {}
-          editJson.scripts.dev = 'npx webpack --config ./config/webpack.dev.ts'
+          editJson.scripts['dev'] = 'npx cpack dev'
+          editJson.scripts['dev-server'] = 'npx cpack dev-server'
+          editJson.scripts['build'] = 'npx cpack build'
           editJson && fs.writeJSON(packageJson, editJson, {
             spaces: '\t'
           }).then(() => {
