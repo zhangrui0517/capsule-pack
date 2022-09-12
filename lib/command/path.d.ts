@@ -6,4 +6,4 @@ export declare const packageJson: string;
 export declare const currentTemplatePath: string;
 export declare const cPackPath: string;
 export declare const cTemplatePath: string;
-export declare const cTemplateProjectPath: string;
+export declare const supportCreateType: string[];
