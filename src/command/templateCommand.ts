@@ -1,38 +1,51 @@
+/** node api */
 import fs from 'fs-extra'
-import { Command } from 'commander'
 import path from 'path'
-import { cTemplatePath, packageJson, currentTemplatePath, cwdPath, supportCreateType } from './path'
+import child_process from 'child_process'
+/** utils */
+import { Command } from 'commander'
+// import inquirer from 'inquirer'
+import { cTemplatePath, packageJson, currentTemplatePath, cwdPath } from './path'
 
 function templateCommand (program: Command) {
   /** 创建项目 */
   program
     .command('create')
-    .argument('<type>')
+    .argument('[type]')
     .description('用于快速创建开发环境，提供开发构建脚手架')
     .action(async (type) => {
-      if(supportCreateType.indexOf(type) === -1) {
-        console.error('不支持的项目类型')
-        return
+      const dirList = fs.readdirSync(cTemplatePath)
+      /** 如果存在指定模板，则直接创建 */
+      if(dirList.indexOf(type) > -1) {
+        fs.copy(path.resolve(cTemplatePath, type), cwdPath)
+      } else {
+        /** 不存在指定类型，则展示所有模板选项 */
+        // inquirer
+        //   .prompt([
+        //     {
+        //       type: 'list',
+        //       name: 'template',
+        //       message: '请选择模板',
+        //       choices: dirList
+        //     }
+        //   ])
       }
-      try {
-        /** 检查是否存在package.json文件，如果不存在则直接创建 */
-        const stat = await fs.stat(packageJson)
-        if(stat) {
-          fs.copy(path.resolve(cTemplatePath, type), cwdPath)
-          const editJson = await fs.readJSON(packageJson)
-          editJson.scripts = editJson.scripts || {}
-          editJson.scripts['dev'] = 'npx cpack dev'
-          editJson.scripts['dev-server'] = 'npx cpack dev-server'
-          editJson.scripts['build'] = 'npx cpack build'
-          editJson && fs.writeJSON(packageJson, editJson, {
-            spaces: '\t'
-          }).then(() => {
-            console.log('创建成功')
-          })
+      /** 是否存在packageJson */
+      fs.stat(packageJson, (err) => {
+        if(err) {
+          child_process.execSync('npm init -y')
         }
-      } catch (err) {
-        throw new Error(err as string)
-      }
+        const editJson = fs.readJsonSync(packageJson)
+        editJson.scripts = editJson.scripts || {}
+        editJson.scripts['dev'] = 'npx cpack dev'
+        editJson.scripts['dev-server'] = 'npx cpack dev-server'
+        editJson.scripts['build'] = 'npx cpack build'
+        editJson && fs.writeJSON(packageJson, editJson, {
+          spaces: '\t'
+        }).then(() => {
+          console.log('创建成功')
+        })
+      })
     })
 
   /** 创建自定义模板 */
