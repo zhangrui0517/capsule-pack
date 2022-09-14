@@ -16,8 +16,6 @@
     "noImplicitReturns": true,
     /* 使用索引访问时，将“未定义”添加到类型 */
     "noUncheckedIndexedAccess": true,
-    /* 生成sourceMap文件 */
-    "sourceMap": true,
     /* 跳过对库文件的检查 */
     "skipLibCheck": true,
     /* 是否不生成文件 */

@@ -10,7 +10,6 @@
   "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended",
-      "plugin:react/recommended"
   ],
   // 覆盖
   "overrides": [
@@ -26,8 +25,7 @@
   },
   // 插件
   "plugins": [
-      "@typescript-eslint",
-      "react"
+      "@typescript-eslint"
   ],
   // 规则
   "rules": {
