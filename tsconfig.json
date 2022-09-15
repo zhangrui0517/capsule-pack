@@ -2,7 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     /* 构建产物的规范 */
-    "module": "commonjs",
+    "module": "CommonJS",
     /* 允许export=导出，由import from 导入 */
     "esModuleInterop": true,
     /* 生成声明文件，开启后会自动生成声明文件 */
@@ -12,7 +12,9 @@
     /* 要构建的目录 */
     "rootDir": "./src",
     /* 是否不生成文件 */
-    "noEmit": false
+    "noEmit": false,
+    /* 模块解析 */
+    "moduleResolution":"Node"
   },
   "include": ["./src"],
   /* 不检查的目录 */

@@ -4,7 +4,7 @@ import path from 'path'
 import child_process from 'child_process'
 /** utils */
 import { Command } from 'commander'
-// import inquirer from 'inquirer'
+import inquirer from 'inquirer'
 import { cTemplatePath, packageJson, currentTemplatePath, cwdPath } from './path'
 
 function templateCommand (program: Command) {
@@ -20,15 +20,19 @@ function templateCommand (program: Command) {
         fs.copy(path.resolve(cTemplatePath, type), cwdPath)
       } else {
         /** 不存在指定类型，则展示所有模板选项 */
-        // inquirer
-        //   .prompt([
-        //     {
-        //       type: 'list',
-        //       name: 'template',
-        //       message: '请选择模板',
-        //       choices: dirList
-        //     }
-        //   ])
+        inquirer
+          .prompt([
+            {
+              type: 'list',
+              name: 'type',
+              message: '请选择模板',
+              choices: dirList
+            }
+          ])
+          .then((answers) => {
+            const { type } = answers
+            fs.copy(path.resolve(cTemplatePath, type), cwdPath)
+          })
       }
       /** 是否存在packageJson */
       fs.stat(packageJson, (err) => {
