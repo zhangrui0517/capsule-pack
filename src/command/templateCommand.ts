@@ -1,11 +1,10 @@
 /** node api */
 import fs from 'fs-extra'
-import path from 'path'
-import child_process from 'child_process'
 /** utils */
 import { Command } from 'commander'
 import inquirer from 'inquirer'
-import { cTemplatePath, packageJson, currentTemplatePath, cwdPath } from './path'
+import { cTemplatePath, currentTemplatePath, cwdPath } from './path'
+import { packageJsonGenerator, copyCpackTemplate } from './utils'
 
 function templateCommand (program: Command) {
   /** 创建项目 */
@@ -17,7 +16,9 @@ function templateCommand (program: Command) {
       const dirList = fs.readdirSync(cTemplatePath)
       /** 如果存在指定模板，则直接创建 */
       if(dirList.indexOf(type) > -1) {
-        fs.copy(path.resolve(cTemplatePath, type), cwdPath)
+        copyCpackTemplate(type, () => {
+          packageJsonGenerator(type)
+        })
       } else {
         /** 不存在指定类型，则展示所有模板选项 */
         inquirer
@@ -31,25 +32,11 @@ function templateCommand (program: Command) {
           ])
           .then((answers) => {
             const { type } = answers
-            fs.copy(path.resolve(cTemplatePath, type), cwdPath)
+            copyCpackTemplate(type, () => {
+              packageJsonGenerator(type)
+            })
           })
       }
-      /** 是否存在packageJson */
-      fs.stat(packageJson, (err) => {
-        if(err) {
-          child_process.execSync('npm init -y')
-        }
-        const editJson = fs.readJsonSync(packageJson)
-        editJson.scripts = editJson.scripts || {}
-        editJson.scripts['dev'] = 'npx cpack dev'
-        editJson.scripts['dev-server'] = 'npx cpack dev-server'
-        editJson.scripts['build'] = 'npx cpack build'
-        editJson && fs.writeJSON(packageJson, editJson, {
-          spaces: '\t'
-        }).then(() => {
-          console.log('创建成功')
-        })
-      })
     })
 
   /** 创建自定义模板 */

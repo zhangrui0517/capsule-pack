@@ -19,7 +19,11 @@
     /* 跳过对库文件的检查 */
     "skipLibCheck": true,
     /* 是否不生成文件 */
-    "noEmit": true
+    "noEmit": true,
+    /* 模块解析 */
+    "moduleResolution":"Node",
+    /*  支持默认导入 */
+    "allowSyntheticDefaultImports":true
   },
   "exclude": ["node_modules", "dist"]
 }
