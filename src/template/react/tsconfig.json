@@ -1,5 +1,5 @@
 {
-  "extends": "capsule-pack/tsconfig.base.js",
+  "extends": "capsule-pack/tsconfig.base.json",
   "compilerOptions": {
     "target": "es2016",
     /* 支持jsx */
