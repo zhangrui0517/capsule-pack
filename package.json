@@ -5,11 +5,9 @@
   "main": "index.js",
   "scripts": {
     "tsc-watch": "npx tsc --watch -p ./tsconfig.json",
-    "tsc": "node ./script/clean.js & npx tsc -p ./tsconfig.json",
-    "dev": "npx webpack --config ./src/config/webpack.dev.ts",
-    "dev-watch": "npx webpack --config ./src/config/webpack.dev.ts --watch",
-    "dev-server": "npx webpack serve --config ./src/config/webpack.dev.ts",
-    "build": "npx webpack --config ./src/config/webpack.prod.ts"
+    "prebuild": "node ./script/clean.js",
+    "build": "npx tsc -p ./tsconfig.json",
+    "postbuild": "cpy src/template lib/template"
   },
   "repository": {
     "type": "git",
@@ -51,6 +49,7 @@
     "babel-loader": "^8.2.5",
     "commander": "^9.4.0",
     "copy-webpack-plugin": "^11.0.0",
+    "cpy-cli": "^4.2.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^4.0.0",
