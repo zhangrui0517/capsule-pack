@@ -11,5 +11,5 @@ export const packageJson = path.resolve(cwdPath, './package.json')
 export const currentTemplatePath = path.resolve(cwdPath, './template')
 
 // capsule-pack 的相关路径
-export const cPackPath = path.resolve(rootPath, './node_modules/capsule-pack/src')
+export const cPackPath = path.resolve(rootPath, './node_modules/capsule-pack/lib')
 export const cTemplatePath = path.resolve(cPackPath, './tempalte')
