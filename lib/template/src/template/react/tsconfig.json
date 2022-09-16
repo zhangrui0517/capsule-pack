@@ -1,0 +1,10 @@
+{
+  "extends": "capsule-pack/tsconfig.base.json",
+  "compilerOptions": {
+    "target": "es2016",
+    /* 支持jsx */
+    "jsx": "react",
+    /* 构建产物的规范 */
+    "module": "ESNext"
+  }
+}
