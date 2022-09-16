@@ -6,11 +6,10 @@ export const rootPath = path.resolve(__dirname.split('node_modules')[0])
 export const cwdPath = process.cwd()
 
 // 当前的执行环境下的package.json
-export const packageJson = `${cwdPath}/package.json`
-
+export const packageJson = path.resolve(cwdPath, './package.json')
 // 当前执行环境下的template文件夹路径
-export const currentTemplatePath = `${cwdPath}/template`
+export const currentTemplatePath = path.resolve(cwdPath, './template')
 
 // capsule-pack 的相关路径
-export const cPackPath = `${rootPath}/node_modules/capsule-pack/src`
-export const cTemplatePath = `${cPackPath}/template`
+export const cPackPath = path.resolve(rootPath, './node_modules/capsule-pack/src')
+export const cTemplatePath = path.resolve(cPackPath, './tempalte')
