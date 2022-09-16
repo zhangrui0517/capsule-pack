@@ -38,7 +38,6 @@ export function importJs(path: string) {
 /** 获取自定义webpack配置 */
 export function getCustomWebpack (): CustomConfig | null {
   const jsConfigPath = path.resolve(rootPath, './webpack.custom.js')
-  // 先查找是否存在ts格式的webpack配置，没有再查找js格式的配置
   if(fs.existsSync(jsConfigPath)) {
     return importJs(jsConfigPath) || null
   }
