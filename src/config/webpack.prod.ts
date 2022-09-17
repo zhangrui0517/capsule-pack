@@ -12,7 +12,7 @@ import { babelPresetGenerator } from './webpack.util'
 // utils
 import glob from 'glob'
 import { merge } from 'webpack-merge'
-import { getCustomWebpack, rootPath, cacheDirPath } from '../utils'
+import { getCustomWebpack, projectPath, cacheDirPath } from './utils'
 
 function prodConfig (): Configuration {
   const customWebpackConfig = getCustomWebpack() || {}
@@ -73,7 +73,7 @@ function prodConfig (): Configuration {
         filename: '[name].[fullhash:6].css'
       }),
       new PurgeCSSPlugin({
-        paths: glob.sync(`${rootPath}/${root}/**/*`,  { nodir: true }),
+        paths: glob.sync(`${projectPath}/${root}/**/*`,  { nodir: true }),
       }),
     ],
     optimization: {

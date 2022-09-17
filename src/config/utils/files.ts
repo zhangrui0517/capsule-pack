@@ -2,13 +2,13 @@
 import fs from 'fs'
 import path from 'path'
 // utils
-import { rootPath } from '.'
+import { projectPath } from '.'
 // types
-import { CustomConfig } from '../types'
+import { CustomConfig } from '../../types'
 
 /** 从package.json 中获取相关信息 */
 export function getPackageJson () {
-  const packageJson = fs.readFileSync(path.resolve(rootPath,'./package.json'))
+  const packageJson = fs.readFileSync(path.resolve(projectPath,'./package.json'))
   if(packageJson) {
     try {
       const packageJsonStr = packageJson.toString()
@@ -37,7 +37,7 @@ export function importJs(path: string) {
 
 /** 获取自定义webpack配置 */
 export function getCustomWebpack (): CustomConfig | null {
-  const jsConfigPath = path.resolve(rootPath, './webpack.custom.js')
+  const jsConfigPath = path.resolve(projectPath, './webpack.custom.js')
   if(fs.existsSync(jsConfigPath)) {
     return importJs(jsConfigPath) || null
   }

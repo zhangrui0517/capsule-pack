@@ -9,7 +9,7 @@ import getBaseConfig from './webpack.base'
 import { babelPresetGenerator } from './webpack.util'
 // utils
 import { merge } from 'webpack-merge'
-import { outputDirPath, getCustomWebpack, cacheDirPath } from '../utils'
+import { outputDirPath, getCustomWebpack, cacheDirPath } from './utils'
 
 const devServer: DevServerConfiguration = {
   compress: true,

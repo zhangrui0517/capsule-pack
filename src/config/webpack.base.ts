@@ -5,7 +5,7 @@ import HtmlWebpackPlugins from 'html-webpack-plugin'
 // node api
 import path from 'path'
 // utils
-import { rootPath, cacheDirPath } from '../utils'
+import { projectPath, cacheDirPath } from './utils'
 import { polyfillInsert } from './webpack.util'
 // types
 import { CustomExtraConfig } from '../types'
@@ -14,11 +14,11 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
   const { root = 'src' } = extraConfig
   const config: Configuration = {
     entry: {
-      index: path.resolve(rootPath, `./${root}/index`)
+      index: path.resolve(projectPath, `./${root}/index`)
     },
     output: {
       filename: '[name].[contenthash:6].js',
-      path: path.resolve(rootPath, './dist'),
+      path: path.resolve(projectPath, './dist'),
       // 清除上一次的构建产物
       clean: true,
     },
@@ -86,12 +86,12 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
     },
     plugins: [
       new HtmlWebpackPlugins({
-        template: path.resolve(rootPath, `./${root}/index.html`)
+        template: path.resolve(projectPath, `./${root}/index.html`)
       }),
       // new webpackBar()
     ],
     resolve: {
-      modules: [path.resolve(rootPath, 'node_modules')],
+      modules: [path.resolve(projectPath, 'node_modules')],
       extensions: ['.ts','.tsx','.js','.jsx']
     },
     optimization: {

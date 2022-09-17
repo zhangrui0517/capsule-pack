@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 /** utils */
 import { Command } from 'commander'
 import inquirer from 'inquirer'
-import { cTemplatePath, currentTemplatePath, cwdPath } from './path'
+import { cTemplatePath, currentTemplatePath, projectPath } from './path'
 import { packageJsonGenerator, copyCpackTemplate } from './utils'
 
 function templateCommand (program: Command) {
@@ -49,7 +49,7 @@ function templateCommand (program: Command) {
       try {
         const stat = await fs.stat(filePath)
         if(stat) {
-          fs.copy(filePath, `${cwdPath}/${file}`)
+          fs.copy(filePath, `${projectPath}/${file}`)
         }
       } catch (err) {
         throw new Error(err as string)

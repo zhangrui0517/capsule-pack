@@ -1,16 +1,24 @@
 import fs, { Stats } from 'fs-extra'
 import path from 'path'
 import child_process from 'child_process'
-import { packageJson, cTemplatePath, cwdPath } from './path'
+import { packageJson, cTemplatePath, projectPath } from './path'
 import { templateType } from '../types'
 
-const packageByTemplate: Record<templateType, {
+const packageByTemplate: Record<templateType | 'common', {
+  scripts?: Record<string, string>
   devDependencies?: string
   dependencies?: string
 }> = {
+  'common': {
+    scripts: {
+      'dev': 'npx cpack dev',
+      'dev-server': 'npx cpack dev-server',
+      'build': 'npx cpack build'
+    }
+  },
   'react': {
     dependencies: 'react react-dom',
-    devDependencies: 'capsule-pack @types/react @types/react-dom'
+    devDependencies: '@types/react @types/react-dom'
   },
   'tools': {},
   'components': {}
@@ -25,9 +33,7 @@ export function packageJsonGenerator (type: templateType,callback?: (stat: Stats
     }
     const editJson = fs.readJsonSync(packageJson)
     editJson.scripts = editJson.scripts || {}
-    editJson.scripts['dev'] = 'npx cpack dev'
-    editJson.scripts['dev-server'] = 'npx cpack dev-server'
-    editJson.scripts['build'] = 'npx cpack build'
+    Object.assign(editJson.scripts, packageByTemplate['common'].scripts)
     editJson && fs.writeJSONSync(packageJson, editJson, {
       spaces: '\t'
     })
@@ -40,7 +46,7 @@ export function packageJsonGenerator (type: templateType,callback?: (stat: Stats
 }
 
 export function copyCpackTemplate (type: templateType, callback: () => void) {
-  fs.copy(path.resolve(cTemplatePath, type), cwdPath, (err) => {
+  fs.copy(path.resolve(cTemplatePath, type), projectPath, (err) => {
     if(err) {
       console.error(err)
       return
