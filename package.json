@@ -7,7 +7,7 @@
     "tsc-watch": "npx tsc --watch -p ./tsconfig.json",
     "prebuild": "node ./script/clean.js",
     "build": "npx tsc -p ./tsconfig.json",
-    "postbuild": "copyfiles -u 1 -r ./src/template/**/* ./src/template/**/**/* lib"
+    "postbuild": "copyfiles -u 1 ./src/template/**/.*.* ./src/template/**/*.* ./src/template/**/**/*.* lib"
   },
   "repository": {
     "type": "git",
