@@ -18,7 +18,7 @@ const packageByTemplate: Record<templateType | 'common', {
   },
   'react': {
     dependencies: 'react react-dom',
-    devDependencies: '@types/react @types/react-dom'
+    devDependencies: 'capsule-pack @types/react @types/react-dom'
   },
   'tools': {},
   'components': {}
