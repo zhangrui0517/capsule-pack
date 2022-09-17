@@ -1,7 +1,7 @@
 import { Configuration } from 'webpack'
 // plugins
 import HtmlWebpackPlugins from 'html-webpack-plugin'
-// import webpackBar from 'webpackBar'
+import webpackBar from 'webpackBar'
 // node api
 import path from 'path'
 // utils
@@ -88,7 +88,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       new HtmlWebpackPlugins({
         template: path.resolve(projectPath, `./${root}/index.html`)
       }),
-      // new webpackBar()
+      new webpackBar()
     ],
     resolve: {
       modules: [path.resolve(projectPath, 'node_modules')],
