@@ -12,4 +12,4 @@ export const currentTemplatePath = path.resolve(projectPath, './template')
 
 // capsule-pack 的相关路径
 export const cPackPath = path.resolve(packagePath, './lib')
-export const cTemplatePath = path.resolve(cPackPath, './template')
+export const cTemplatePath = path.resolve(packagePath, './template')
