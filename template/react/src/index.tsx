@@ -4,14 +4,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-export interface IProps {
-
-}
+export interface IProps {}
 
 const App = (props: IProps) => {
-  return (
-    <div>Hello capsule</div>
-  )
+  return <div>Hello capsule</div>
 }
 
-ReactDOM.render(<App/>, document.getElementById('root'))
+ReactDOM.render(<App />, document.getElementById('root'))

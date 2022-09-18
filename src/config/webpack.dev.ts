@@ -15,11 +15,11 @@ const devServer: DevServerConfiguration = {
   compress: true,
   port: 8800,
   static: {
-    directory: outputDirPath,
+    directory: outputDirPath
   }
 }
 
-function devConfig (): Configuration {
+function devConfig(): Configuration {
   const customWebpackConfig = getCustomWebpack() || {}
   const { config, ...otherConfig } = customWebpackConfig
   /** 生成babel preset */
@@ -41,9 +41,9 @@ function devConfig (): Configuration {
               loader: 'babel-loader',
               options: {
                 cacheDirectory: path.resolve(cacheDirPath, '.babel-cache'),
-                presets: babelPreset, 
-              },
-            },
+                presets: babelPreset
+              }
+            }
           ],
           exclude: /node_modules/
         },
@@ -57,25 +57,23 @@ function devConfig (): Configuration {
               options: {
                 importLoaders: 2
               }
-            }, 
+            },
             {
               loader: 'postcss-loader',
               options: {
                 postcssOptions: {
-                  plugins: [
-                    'postcss-preset-env'
-                  ]
+                  plugins: ['postcss-preset-env']
                 }
               }
             },
             'sass-loader'
           ]
-        },
+        }
       ]
     },
     plugins: [
       new ESlintWebpackPlugin({
-        extensions: ['ts','tsx','js','jsx']
+        extensions: ['ts', 'tsx', 'js', 'jsx']
       })
     ]
   })

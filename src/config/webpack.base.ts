@@ -20,7 +20,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       filename: '[name].[contenthash:6].js',
       path: path.resolve(projectPath, './dist'),
       // 清除上一次的构建产物
-      clean: true,
+      clean: true
     },
     cache: {
       type: 'filesystem',
@@ -36,17 +36,17 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
               loader: 'image-webpack-loader',
               options: {
                 mozjpeg: {
-                  progressive: true,
+                  progressive: true
                 },
                 optipng: {
-                  enabled: false,
+                  enabled: false
                 },
                 pngquant: {
-                  quality: [0.65, 0.90],
+                  quality: [0.65, 0.9],
                   speed: 4
                 },
                 gifsicle: {
-                  interlaced: false,
+                  interlaced: false
                 },
                 webp: {
                   quality: 75
@@ -72,7 +72,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
           type: 'asset/resource',
           generator: {
             filename: 'static/fonts/[name]-[contenthash][ext][query]'
-          },
+          }
         },
         // 处理内联文件
         {
@@ -92,7 +92,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
     ],
     resolve: {
       modules: [path.resolve(projectPath, 'node_modules')],
-      extensions: ['.ts','.tsx','.js','.jsx']
+      extensions: ['.ts', '.tsx', '.js', '.jsx']
     },
     optimization: {
       minimize: true,

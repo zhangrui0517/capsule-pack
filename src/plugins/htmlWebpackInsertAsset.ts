@@ -18,7 +18,7 @@ export type TagToAssetTagsMap = {
 
 class HtmlWebpackInsertAsset {
   options: Options = []
-  constructor (options: Options) {
+  constructor(options: Options) {
     this.options = options
   }
   private tagToAssetTagsMap: TagToAssetTagsMap = {
@@ -26,7 +26,7 @@ class HtmlWebpackInsertAsset {
     link: 'styles',
     meta: 'meta'
   }
-  apply (compiler: Compiler) {
+  apply(compiler: Compiler) {
     compiler.hooks.compilation.tap('HtmlWebpackInsertAsset', (compilation: Compilation) => {
       const htmlWebpackHooks = HtmlWebpackPlugins.getHooks(compilation)
       htmlWebpackHooks.alterAssetTags.tapAsync('HtmlWebpackInsertAsset', (data, cb) => {

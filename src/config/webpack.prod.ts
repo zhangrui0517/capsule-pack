@@ -1,5 +1,5 @@
 import { Configuration } from 'webpack'
-// node api 
+// node api
 import path from 'path'
 // plugin
 import PurgeCSSPlugin from 'purgecss-webpack-plugin'
@@ -14,7 +14,7 @@ import glob from 'glob'
 import { merge } from 'webpack-merge'
 import { getCustomWebpack, projectPath, cacheDirPath } from './utils'
 
-function prodConfig (): Configuration {
+function prodConfig(): Configuration {
   const customWebpackConfig = getCustomWebpack() || {}
   const { config, ...otherConfig } = customWebpackConfig
   const { root = 'src' } = otherConfig || {}
@@ -36,9 +36,9 @@ function prodConfig (): Configuration {
               loader: 'babel-loader',
               options: {
                 cacheDirectory: path.resolve(cacheDirPath, '.babel-cache'),
-                presets: babelPreset, 
-              },
-            },
+                presets: babelPreset
+              }
+            }
           ],
           exclude: /node_modules/
         },
@@ -52,20 +52,18 @@ function prodConfig (): Configuration {
               options: {
                 importLoaders: 2
               }
-            }, 
+            },
             {
               loader: 'postcss-loader',
               options: {
                 postcssOptions: {
-                  plugins: [
-                    'postcss-preset-env'
-                  ]
+                  plugins: ['postcss-preset-env']
                 }
               }
             },
             'sass-loader'
           ]
-        },
+        }
       ]
     },
     plugins: [
@@ -73,8 +71,8 @@ function prodConfig (): Configuration {
         filename: '[name].[fullhash:6].css'
       }),
       new PurgeCSSPlugin({
-        paths: glob.sync(`${projectPath}/${root}/**/*`,  { nodir: true }),
-      }),
+        paths: glob.sync(`${projectPath}/${root}/**/*`, { nodir: true })
+      })
     ],
     optimization: {
       minimizer: [
@@ -84,11 +82,11 @@ function prodConfig (): Configuration {
           terserOptions: {
             output: {
               // 清除注释
-              comments: false,
-            },
+              comments: false
+            }
           },
           // 不提取注释到另外的文件中
-          extractComments: false,
+          extractComments: false
         }),
         // 压缩css
         new CssMinimizerPlugin({
@@ -98,9 +96,9 @@ function prodConfig (): Configuration {
               'default',
               {
                 // 清除注释
-                discardComments: { removeAll: true },
+                discardComments: { removeAll: true }
               }
-            ],
+            ]
           }
         })
       ]

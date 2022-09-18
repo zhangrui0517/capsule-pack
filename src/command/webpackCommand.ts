@@ -10,7 +10,7 @@ function webpackCommand(program: Command) {
     .description('构建开发环境产物')
     .action(() => {
       Webpack(devConfig(), (err, stats) => {
-        if(stats) {
+        if (stats) {
           if (err || stats.hasErrors()) {
             const error = err || stats.hasErrors()
             console.error(error)
@@ -40,7 +40,7 @@ function webpackCommand(program: Command) {
     .description('构建生产环境产物')
     .action(() => {
       Webpack(prodConfig(), (err, stats) => {
-        if(stats) {
+        if (stats) {
           if (err || stats.hasErrors()) {
             const error = err || stats.hasErrors()
             console.error(error)
