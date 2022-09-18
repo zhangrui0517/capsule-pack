@@ -1,84 +1,94 @@
 {
-  "name": "capsule-pack",
-  "version": "1.0.6",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "tsc-watch": "npx tsc --watch -p ./tsconfig.json",
-    "prebuild": "node ./script/clean.js",
-    "build": "npx tsc -p ./tsconfig.json"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/snowleoz/capsule-webpack.git"
-  },
-  "bin": {
-    "cpack": "./bin/index.js"
-  },
-  "keywords": [
-    "webapck"
-  ],
-  "author": "zhangrui",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/snowleoz/capsule-webpack/issues"
-  },
-  "homepage": "https://github.com/snowleoz/capsule-webpack#readme",
-  "devDependencies": {
-    "@types/commander": "^2.12.2",
-    "@types/fs-extra": "^9.0.13",
-    "@types/inquirer": "^8.2.3",
-    "@types/node": "^18.7.8",
-    "@types/postcss-preset-env": "^7.7.0",
-    "@types/react": "^18.0.17",
-    "@types/react-dom": "^18.0.6",
-    "@types/webpack": "^5.28.0",
-    "@types/webpack-dev-server": "^4.7.2",
-    "@typescript-eslint/eslint-plugin": "^5.37.0",
-    "@typescript-eslint/parser": "^5.37.0",
-    "eslint-config-prettier": "^8.5.0",
-    "lint-staged": "^13.0.3",
-    "prettier": "^2.7.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "@babel/core": "^7.18.13",
-    "@babel/preset-env": "^7.18.10",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.18.6",
-    "add-asset-html-webpack-plugin": "^5.0.2",
-    "babel-loader": "^8.2.5",
-    "commander": "^9.4.0",
-    "copy-webpack-plugin": "^11.0.0",
-    "cross-env": "^7.0.3",
-    "css-loader": "^6.7.1",
-    "css-minimizer-webpack-plugin": "^4.0.0",
-    "eslint": "^8.23.0",
-    "eslint-plugin-react": "^7.31.7",
-    "eslint-webpack-plugin": "^3.2.0",
-    "fs-extra": "^10.1.0",
-    "glob": "^8.0.3",
-    "html-webpack-plugin": "^5.5.0",
-    "husky": "^8.0.1",
-    "image-webpack-loader": "^8.1.0",
-    "inquirer": "^8.2.3",
-    "mini-css-extract-plugin": "^2.6.1",
-    "postcss": "^8.4.16",
-    "postcss-loader": "^7.0.1",
-    "postcss-preset-env": "^7.8.0",
-    "purgecss-webpack-plugin": "^4.1.3",
-    "sass": "^1.54.5",
-    "sass-loader": "^13.0.2",
-    "style-loader": "^3.3.1",
-    "terser-webpack-plugin": "^5.3.5",
-    "thread-loader": "^3.0.4",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.11.0",
-    "webpack-merge": "^5.8.0",
-    "webpackbar": "^5.0.2"
-  }
+	"name": "capsule-pack",
+	"version": "1.0.6",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"tsc-watch": "npx tsc --watch -p ./tsconfig.json",
+		"prebuild": "node ./script/clean.js"
+	},
+	"husky": {
+		"pre-commit": "lint-staged"
+	},
+	"lint-staged": {
+		"./src/**/*.*": [
+			"prettier --write",
+			"eslint --cache --fix",
+			"yarn run build",
+			"git add"
+		]
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/snowleoz/capsule-webpack.git"
+	},
+	"bin": {
+		"cpack": "./bin/index.js"
+	},
+	"keywords": [
+		"webapck"
+	],
+	"author": "zhangrui",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/snowleoz/capsule-webpack/issues"
+	},
+	"homepage": "https://github.com/snowleoz/capsule-webpack#readme",
+	"devDependencies": {
+		"@types/commander": "^2.12.2",
+		"@types/fs-extra": "^9.0.13",
+		"@types/inquirer": "^8.2.3",
+		"@types/node": "^18.7.8",
+		"@types/postcss-preset-env": "^7.7.0",
+		"@types/react": "^18.0.17",
+		"@types/react-dom": "^18.0.6",
+		"@types/webpack": "^5.28.0",
+		"@types/webpack-dev-server": "^4.7.2",
+		"@typescript-eslint/eslint-plugin": "^5.37.0",
+		"@typescript-eslint/parser": "^5.37.0",
+		"eslint-config-prettier": "^8.5.0",
+		"husky": "^8.0.1",
+		"lint-staged": "^13.0.3",
+		"prettier": "^2.7.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"ts-node": "^10.9.1",
+		"typescript": "^4.7.4"
+	},
+	"dependencies": {
+		"@babel/core": "^7.18.13",
+		"@babel/preset-env": "^7.18.10",
+		"@babel/preset-react": "^7.18.6",
+		"@babel/preset-typescript": "^7.18.6",
+		"add-asset-html-webpack-plugin": "^5.0.2",
+		"babel-loader": "^8.2.5",
+		"commander": "^9.4.0",
+		"copy-webpack-plugin": "^11.0.0",
+		"cross-env": "^7.0.3",
+		"css-loader": "^6.7.1",
+		"css-minimizer-webpack-plugin": "^4.0.0",
+		"eslint": "^8.23.0",
+		"eslint-plugin-react": "^7.31.7",
+		"eslint-webpack-plugin": "^3.2.0",
+		"fs-extra": "^10.1.0",
+		"glob": "^8.0.3",
+		"html-webpack-plugin": "^5.5.0",
+		"image-webpack-loader": "^8.1.0",
+		"inquirer": "^8.2.3",
+		"mini-css-extract-plugin": "^2.6.1",
+		"postcss": "^8.4.16",
+		"postcss-loader": "^7.0.1",
+		"postcss-preset-env": "^7.8.0",
+		"purgecss-webpack-plugin": "^4.1.3",
+		"sass": "^1.54.5",
+		"sass-loader": "^13.0.2",
+		"style-loader": "^3.3.1",
+		"terser-webpack-plugin": "^5.3.5",
+		"thread-loader": "^3.0.4",
+		"webpack": "^5.74.0",
+		"webpack-cli": "^4.10.0",
+		"webpack-dev-server": "^4.11.0",
+		"webpack-merge": "^5.8.0",
+		"webpackbar": "^5.0.2"
+	}
 }
