@@ -1,6 +1,10 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    /* 指定ECMAScript目标版本 */
+    "target": "es2017",
+    /* 默认注入的库 */
+    "lib": ["es6", "es2017"],
     /* 构建产物的规范 */
     "module": "CommonJS",
     /* 允许export=导出，由import from 导入 */
@@ -18,5 +22,5 @@
   },
   "include": ["./src"],
   /* 不检查的目录 */
-  "exclude": ["node_modules","./test", "./lib", "./dist", "./src/template"]
+  "exclude": ["node_modules","./test", "./lib", "./dist", "./template"]
 }
