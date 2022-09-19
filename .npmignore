@@ -1,4 +1,5 @@
 /src
+/tsconfig.json
 test
 script
 node_modules
