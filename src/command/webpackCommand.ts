@@ -1,15 +1,18 @@
-import Webpack from 'webpack'
-import WebpackDevServer from 'webpack-dev-server'
+const Webpack = require('webpack')
+const WebpackDevServer = require('webpack-dev-server')
+const devConfig = require('../config/webpack.dev')
+const prodConfig = require('../config/webpack.prod')
+/** type */
 import { Command } from 'commander'
-import devConfig from '../config/webpack.dev'
-import prodConfig from '../config/webpack.prod'
+import type { Stats } from 'webpack'
+
 
 function webpackCommand(program: Command) {
   program
     .command('dev')
     .description('构建开发环境产物')
     .action(() => {
-      Webpack(devConfig(), (err, stats) => {
+      Webpack(devConfig(), (err: Error | undefined, stats: Stats | undefined) => {
         if (stats) {
           if (err || stats.hasErrors()) {
             const error = err || stats.hasErrors()
@@ -39,7 +42,7 @@ function webpackCommand(program: Command) {
     .command('build')
     .description('构建生产环境产物')
     .action(() => {
-      Webpack(prodConfig(), (err, stats) => {
+      Webpack(prodConfig(), (err: Error | undefined, stats: Stats | undefined) => {
         if (stats) {
           if (err || stats.hasErrors()) {
             const error = err || stats.hasErrors()
@@ -51,4 +54,4 @@ function webpackCommand(program: Command) {
     })
 }
 
-export default webpackCommand
+module.exports = webpackCommand

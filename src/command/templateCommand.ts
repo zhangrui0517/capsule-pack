@@ -1,10 +1,12 @@
 /** node api */
-import fs from 'fs-extra'
+const fs = require('fs-extra')
 /** utils */
-import { Command } from 'commander'
-import inquirer from 'inquirer'
-import { cTemplatePath, currentTemplatePath, projectPath } from './path'
-import { packageJsonGenerator, copyCpackTemplate } from './utils'
+const inquirer = require('inquirer')
+const { cTemplatePath, currentTemplatePath, projectPath } = require('./path')
+const { packageJsonGenerator, copyCpackTemplate } = require('./utils')
+/** type */
+import type { Command } from 'commander'
+import type { Answers } from 'inquirer'
 
 function templateCommand(program: Command) {
   /** 创建项目 */
@@ -32,7 +34,7 @@ function templateCommand(program: Command) {
               choices: dirList
             }
           ])
-          .then(answers => {
+          .then((answers: Answers) => {
             const { type } = answers
             console.log(`开始创建${type}模板`)
             copyCpackTemplate(type, () => {
@@ -62,4 +64,4 @@ function templateCommand(program: Command) {
     })
 }
 
-export default templateCommand
+module.exports = templateCommand

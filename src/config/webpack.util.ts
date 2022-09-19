@@ -1,10 +1,11 @@
-import { Configuration } from 'webpack'
+const { polyfillIO } = require('./utils/resource')
+const htmlWebpackInsertAsset = require('../plugins/htmlWebpackInsertAsset')
+/** type */
 import { CustomExtraConfig } from '../types'
-import { polyfillIO } from './utils'
-import htmlWebpackInsertAsset from '../plugins/htmlWebpackInsertAsset'
+import { Configuration } from 'webpack'
 
 /** 根据自定义参数，插入polyfill脚本到html中 */
-export function polyfillInsert(extraConfig: CustomExtraConfig, config: Configuration) {
+function polyfillInsert(extraConfig: CustomExtraConfig, config: Configuration) {
   const { dynamicPolyfill, dynamicPolyfillCDN } = extraConfig
   if (dynamicPolyfill) {
     config.plugins = config.plugins || []
@@ -25,11 +26,16 @@ export function polyfillInsert(extraConfig: CustomExtraConfig, config: Configura
 }
 
 /** 根据参数生成babel要加载的预置编译器 */
-export function babelPresetGenerator(extraConfig: CustomExtraConfig) {
+function babelPresetGenerator(extraConfig: CustomExtraConfig) {
   const { react = true } = extraConfig
   const presetResult = ['@babel/preset-typescript', '@babel/preset-env']
   if (react) {
     presetResult.push('@babel/preset-react')
   }
   return presetResult
+}
+
+module.exports = {
+  polyfillInsert,
+  babelPresetGenerator
 }

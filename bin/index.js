@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-const runCpack = require('../lib/command/index.js').default
+const runCpack = require('../lib/command/index.js')
 runCpack()

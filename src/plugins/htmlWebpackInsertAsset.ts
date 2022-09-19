@@ -1,5 +1,7 @@
-import HtmlWebpackPlugins from 'html-webpack-plugin'
-import { Compiler, Compilation } from 'webpack'
+const HtmlWebpackPlugins = require('html-webpack-plugin')
+/** type */
+import type { Compiler, Compilation } from 'webpack'
+import type { Hooks } from 'html-webpack-plugin'
 
 export type Options = Array<{
   tag: 'meta' | 'script' | 'link'
@@ -28,7 +30,7 @@ class HtmlWebpackInsertAsset {
   }
   apply(compiler: Compiler) {
     compiler.hooks.compilation.tap('HtmlWebpackInsertAsset', (compilation: Compilation) => {
-      const htmlWebpackHooks = HtmlWebpackPlugins.getHooks(compilation)
+      const htmlWebpackHooks = HtmlWebpackPlugins.getHooks(compilation) as Hooks
       htmlWebpackHooks.alterAssetTags.tapAsync('HtmlWebpackInsertAsset', (data, cb) => {
         const { assetTags } = data
         this.options.forEach(optionItem => {
@@ -50,4 +52,4 @@ class HtmlWebpackInsertAsset {
   }
 }
 
-export default HtmlWebpackInsertAsset
+module.exports =  HtmlWebpackInsertAsset
