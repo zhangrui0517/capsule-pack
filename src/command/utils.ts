@@ -14,9 +14,9 @@ const packageByTemplate: Record<
 > = {
   common: {
     scripts: {
-      dev: 'npx cpack dev',
+      'dev': 'npx cpack dev',
       'dev-server': 'npx cpack dev-server',
-      build: 'npx cpack build'
+      'build': 'npx cpack build'
     }
   },
   react: {
