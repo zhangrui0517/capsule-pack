@@ -1,14 +1,14 @@
 // plugin
-const ESlintWebpackPlugin = require('eslint-webpack-plugin')
+import ESlintWebpackPlugin from 'eslint-webpack-plugin'
 // node api
-const path = require('path')
+import path from 'path'
 // config
-const getBaseConfig = require('./webpack.base')
-const { babelPresetGenerator } = require('./webpack.util')
+import getBaseConfig from './webpack.base'
+import { babelPresetGenerator } from './webpack.util'
 // utils
-const { merge } = require('webpack-merge')
-const { outputDirPath, cacheDirPath } = require('./utils/path')
-const { getCustomWebpack } = require('./utils/files')
+import { merge } from 'webpack-merge'
+import { outputDirPath, cacheDirPath } from '../utils/path'
+import { getCustomWebpack } from '../utils/files'
 /** type */
 import type { Configuration } from 'webpack'
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
@@ -82,4 +82,4 @@ function devConfig(): Configuration {
   return config ? config(devConfig) : devConfig
 }
 
-module.exports = devConfig
+export default devConfig

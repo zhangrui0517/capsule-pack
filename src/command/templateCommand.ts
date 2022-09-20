@@ -1,9 +1,9 @@
 /** node api */
-const fs = require('fs-extra')
+import fs from 'fs-extra'
 /** utils */
 const inquirer = require('inquirer')
-const { cTemplatePath, currentTemplatePath, projectPath } = require('./path')
-const { packageJsonGenerator, copyCpackTemplate } = require('./utils')
+import { cTemplatePath, currentTemplatePath, projectPath } from '../utils/path'
+import { packageJsonGenerator, copyCpackTemplate } from './utils'
 /** type */
 import type { Command } from 'commander'
 import type { Answers } from 'inquirer'
@@ -64,4 +64,4 @@ function templateCommand(program: Command) {
     })
 }
 
-module.exports = templateCommand
+export default templateCommand

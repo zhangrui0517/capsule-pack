@@ -1,6 +1,6 @@
-const { Command } = require('commander')
-const webpackCommand = require('./webpackCommand')
-const templateCommand = require('./templateCommand')
+import { Command } from 'commander'
+import webpackCommand from './webpackCommand'
+import templateCommand from './templateCommand'
 
 function runCpack() {
   const program = new Command()
@@ -15,4 +15,4 @@ function runCpack() {
   program.parse()
 }
 
-module.exports = runCpack
+export default runCpack

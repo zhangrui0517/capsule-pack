@@ -1,4 +1,4 @@
-const HtmlWebpackPlugins = require('html-webpack-plugin')
+import HtmlWebpackPlugins from 'html-webpack-plugin'
 /** type */
 import type { Compiler, Compilation } from 'webpack'
 import type { Hooks } from 'html-webpack-plugin'
@@ -52,4 +52,4 @@ class HtmlWebpackInsertAsset {
   }
 }
 
-module.exports =  HtmlWebpackInsertAsset
+export default HtmlWebpackInsertAsset

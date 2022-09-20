@@ -1,7 +1,7 @@
-const fs = require('fs-extra')
-const path = require('path')
-const child_process = require('child_process')
-const { packageJson, cTemplatePath, projectPath } = require('./path')
+import fs from 'fs-extra'
+import path from 'path'
+import child_process from 'child_process'
+import { packageJson, cTemplatePath, projectPath } from '../utils/path'
 /** type */
 import { templateType } from '../types'
 import type { Stats } from 'fs-extra'
@@ -30,7 +30,7 @@ const packageByTemplate: Record<
 }
 
 /** 处理package.json文件（添加依赖、脚本等），如果不存在则创建 */
-function packageJsonGenerator(type: templateType, callback?: (stat: Stats) => void) {
+export function packageJsonGenerator(type: templateType, callback?: (stat: Stats) => void) {
   /** 是否存在packageJson */
   fs.stat(packageJson, (err: NodeJS.ErrnoException, stat: Stats) => {
     if (err) {
@@ -54,7 +54,7 @@ function packageJsonGenerator(type: templateType, callback?: (stat: Stats) => vo
   })
 }
 
-function copyCpackTemplate(type: templateType, callback: () => void) {
+export function copyCpackTemplate(type: templateType, callback: () => void) {
   fs.copy(path.resolve(cTemplatePath, type), projectPath, (err: NodeJS.ErrnoException) => {
     if (err) {
       console.error(err)
@@ -62,9 +62,4 @@ function copyCpackTemplate(type: templateType, callback: () => void) {
     }
     callback && callback()
   })
-}
-
-module.exports = {
-  packageJsonGenerator,
-  copyCpackTemplate
 }

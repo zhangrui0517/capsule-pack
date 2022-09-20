@@ -1,13 +1,13 @@
 // node api
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 // utils
-const { projectPath } = require('./path')
+import { projectPath } from './path'
 // types
-import { CustomConfig } from '../../types'
+import { CustomConfig } from '../types'
 
 /** 从package.json 中获取相关信息 */
-function getPackageJson() {
+export function getPackageJson() {
   const packageJson = fs.readFileSync(path.resolve(projectPath, './package.json'))
   if (packageJson) {
     try {
@@ -25,7 +25,7 @@ function getPackageJson() {
  * @param {string} path 引入路径
  * @returns {object | function} 返回一份webpack配置或者一个回调函数用于处理webpack配置
  */
-function importJs(path: string) {
+export function importJs(path: string) {
   try {
     const module = require(path)
     return module
@@ -42,9 +42,4 @@ export function getCustomWebpack(): CustomConfig | null {
     return importJs(jsConfigPath) || null
   }
   return null
-}
-
-module.exports = {
-  getPackageJson,
-  importJs
 }

@@ -1,11 +1,11 @@
 // plugins
-const HtmlWebpackPlugins = require('html-webpack-plugin')
-const webpackBar = require('webpackBar')
+import HtmlWebpackPlugins from 'html-webpack-plugin'
+import webpackBar from 'webpackBar'
 // node api
-const path = require('path')
+import path from 'path'
 // utils
-const { projectPath, cacheDirPath } = require('./utils/path')
-const { polyfillInsert } = require('./webpack.util')
+import { projectPath, cacheDirPath } from '../utils/path'
+import { polyfillInsert } from './webpack.util'
 // types
 import type { CustomExtraConfig } from '../types'
 import type { Configuration } from 'webpack'
@@ -118,4 +118,4 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
   return config
 }
 
-module.exports = getBaseConfig
+export default getBaseConfig

@@ -1,7 +1,7 @@
-const Webpack = require('webpack')
-const WebpackDevServer = require('webpack-dev-server')
-const devConfig = require('../config/webpack.dev')
-const prodConfig = require('../config/webpack.prod')
+import Webpack from 'webpack'
+import WebpackDevServer from 'webpack-dev-server'
+import devConfig from '../config/webpack.dev'
+import prodConfig from '../config/webpack.prod'
 /** type */
 import { Command } from 'commander'
 import type { Stats } from 'webpack'
@@ -54,4 +54,4 @@ function webpackCommand(program: Command) {
     })
 }
 
-module.exports = webpackCommand
+export default webpackCommand

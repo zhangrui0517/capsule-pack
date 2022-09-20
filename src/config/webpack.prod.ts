@@ -1,18 +1,18 @@
 // node api
-const path = require('path')
+import path from 'path'
 // plugin
-const PurgeCSSPlugin = require('purgecss-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const TerserWebpackPlugin = require('terser-webpack-plugin')
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+import PurgeCSSPlugin from 'purgecss-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import TerserWebpackPlugin from 'terser-webpack-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 // config
-const getBaseConfig = require('./webpack.base')
-const { babelPresetGenerator } = require('./webpack.util')
+import getBaseConfig from './webpack.base'
+import { babelPresetGenerator } from './webpack.util'
 // utils
-const glob = require('glob')
-const { merge } = require('webpack-merge')
-const { projectPath, cacheDirPath } = require('./utils/path')
-const { getCustomWebpack } = require('./utils/files')
+import glob from 'glob'
+import { merge } from 'webpack-merge'
+import { projectPath, cacheDirPath } from '../utils/path'
+import { getCustomWebpack } from '../utils/files'
 /** type */
 import { Configuration } from 'webpack'
 
@@ -109,4 +109,4 @@ function prodConfig(): Configuration {
   return config ? config(prodConfig) : prodConfig
 }
 
-module.exports = prodConfig
+export default prodConfig
