@@ -2,7 +2,7 @@
 const fs = require('fs')
 const path = require('path')
 // utils
-const { projectPath } = require('.')
+const { projectPath } = require('./path')
 // types
 import { CustomConfig } from '../../types'
 

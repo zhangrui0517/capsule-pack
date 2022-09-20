@@ -8,7 +8,7 @@ const { babelPresetGenerator } = require('./webpack.util')
 // utils
 const { merge } = require('webpack-merge')
 const { outputDirPath, cacheDirPath } = require('./utils/path')
-const { getCustomWebpack } = require('./utils/file')
+const { getCustomWebpack } = require('./utils/files')
 /** type */
 import type { Configuration } from 'webpack'
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server'
