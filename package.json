@@ -9,7 +9,9 @@
 		"build": "npx tsc -p ./tsconfig.json"
 	},
 	"husky": {
-		"pre-commit": "lint-staged"
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
 	},
 	"lint-staged": {
 		"./src/**/*.*": [
@@ -29,7 +31,7 @@
 	"keywords": [
 		"webapck"
 	],
-	"author": "zhangrui",
+	"author": "zhangrui0517",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/snowleoz/capsule-webpack/issues"
