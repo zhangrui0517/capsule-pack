@@ -36,14 +36,13 @@ function templateCommand(program: Command) {
           ])
           .then((answers: Answers) => {
             const { type } = answers
-            console.log(`开始创建${type}模板`)
+            console.info(`开始创建${type}模板`)
             copyCpackTemplate(type, () => {
-              console.log('模板创建成功')
+              console.info('模板创建成功')
               packageJsonGenerator(type)
             })
           })
       }
-      console.log('项目创建完成')
     })
 
   /** 创建自定义模板 */

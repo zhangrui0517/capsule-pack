@@ -10,8 +10,8 @@ const packageByTemplate: Record<
   templateType | 'common',
   {
     scripts?: Record<string, string>
-    devDependencies?: string
-    dependencies?: string
+    devDependencies: string[]
+    dependencies: string[]
   }
 > = {
   common: {
@@ -19,14 +19,22 @@ const packageByTemplate: Record<
       'dev': 'npx cpack dev',
       'dev-server': 'npx cpack dev-server',
       'build': 'npx cpack build'
-    }
+    },
+    dependencies: [],
+    devDependencies: ['husky','prettier','typescript','@typescript-eslint/eslint-plugin','@typescript-eslint/parser','eslint-config-prettier', 'eslint']
   },
   react: {
-    dependencies: 'react react-dom',
-    devDependencies: 'capsule-pack @types/react @types/react-dom'
+    dependencies: ['react', 'react-dom'],
+    devDependencies: ['@types/react', '@types/react-dom', 'eslint-plugin-react']
   },
-  tools: {},
-  components: {}
+  tools: {
+    dependencies: [],
+    devDependencies: []
+  },
+  components: {
+    dependencies: [],
+    devDependencies: []
+  }
 }
 
 /** 处理package.json文件（添加依赖、脚本等），如果不存在则创建 */
@@ -35,22 +43,27 @@ export function packageJsonGenerator(type: templateType, callback?: (stat: Stats
   /** 是否存在packageJson */
   fs.stat(packageJson, (err: NodeJS.ErrnoException, stat: Stats) => {
     if (err) {
-      console.log('初始化package.json文件')
-      child_process.execSync('npm init -y')
+      console.info('初始化package.json文件')
+      child_process.spawnSync('npm',['init', '-y'])
     }
-    console.log('往package.json注入执行脚本和相关依赖信息')
+    console.info('往package.json注入执行脚本和相关依赖信息')
+    const commonPackageTemplate = packageByTemplate['common']
     const editJson = fs.readJsonSync(packageJson)
     editJson.scripts = editJson.scripts || {}
-    Object.assign(editJson.scripts, packageByTemplate['common'].scripts)
+    Object.assign(editJson.scripts, commonPackageTemplate.scripts)
     editJson &&
       fs.writeJSONSync(packageJson, editJson, {
         spaces: '\t'
       })
-    const currentDepPackage = packageByTemplate[type].dependencies
-    currentDepPackage && child_process.execSync(`npm i ${currentDepPackage} -save`)
-    const currentDevPackage = packageByTemplate[type].devDependencies
-    currentDevPackage && child_process.execSync(`npm i ${currentDevPackage} -save-dev`)
-    console.log('package.json创建完成')
+    console.info('开始安装预置依赖')
+    const currentDepPackage = [...commonPackageTemplate.dependencies, ...packageByTemplate[type].dependencies]
+    const depSpawn = currentDepPackage && child_process.spawnSync('npm',['install', ...currentDepPackage, '-save'])
+    console.info(depSpawn?.stdout.toString())
+    child_process.spawn('npm',['cache', 'clean', '--force'])
+    const currentDevPackage = [...commonPackageTemplate.devDependencies, ...packageByTemplate[type].devDependencies]
+    const devSpawn = currentDevPackage && child_process.spawnSync('npm',['install', ...currentDevPackage, '--save-dev'])
+    console.info(devSpawn?.stdout.toString())
+    console.info('package.json创建完成')
     callback && callback(stat)
   })
 }
