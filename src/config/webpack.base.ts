@@ -4,7 +4,7 @@ import webpackBar from 'webpackBar'
 // node api
 import path from 'path'
 // utils
-import { projectPath, cacheDirPath } from '../utils/path'
+import { projectPath, getCacheDirPath } from '../utils/path'
 import { polyfillInsert } from './webpack.util'
 // types
 import type { CustomExtraConfig } from '../types'
@@ -24,7 +24,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
     },
     cache: {
       type: 'filesystem',
-      cacheDirectory: path.resolve(cacheDirPath, './webpack')
+      cacheDirectory: path.resolve(getCacheDirPath(), './webpack')
     },
     module: {
       rules: [

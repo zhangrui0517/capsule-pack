@@ -11,7 +11,7 @@ import { babelPresetGenerator } from './webpack.util'
 // utils
 import glob from 'glob'
 import { merge } from 'webpack-merge'
-import { projectPath, cacheDirPath } from '../utils/path'
+import { projectPath, getCacheDirPath } from '../utils/path'
 import { getCustomWebpack } from '../utils/files'
 /** type */
 import { Configuration } from 'webpack'
@@ -37,7 +37,7 @@ function prodConfig(): Configuration {
             {
               loader: 'babel-loader',
               options: {
-                cacheDirectory: path.resolve(cacheDirPath, '.babel-cache'),
+                cacheDirectory: path.resolve(getCacheDirPath(), '.babel-cache'),
                 presets: babelPreset
               }
             }

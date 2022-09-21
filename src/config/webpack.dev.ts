@@ -7,7 +7,7 @@ import getBaseConfig from './webpack.base'
 import { babelPresetGenerator } from './webpack.util'
 // utils
 import { merge } from 'webpack-merge'
-import { outputDirPath, cacheDirPath } from '../utils/path'
+import { getOutputDirPath, getCacheDirPath } from '../utils/path'
 import { getCustomWebpack } from '../utils/files'
 /** type */
 import type { Configuration } from 'webpack'
@@ -17,7 +17,7 @@ const devServer: DevServerConfiguration = {
   compress: true,
   port: 8800,
   static: {
-    directory: outputDirPath
+    directory: getOutputDirPath()
   }
 }
 
@@ -42,7 +42,7 @@ function devConfig(): Configuration {
             {
               loader: 'babel-loader',
               options: {
-                cacheDirectory: path.resolve(cacheDirPath, '.babel-cache'),
+                cacheDirectory: path.resolve(getCacheDirPath(), '.babel-cache'),
                 presets: babelPreset
               }
             }
