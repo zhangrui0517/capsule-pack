@@ -1,5 +1,4 @@
-/// <reference types="node" />
-import { templateType } from '../types';
-import type { Stats } from 'fs-extra';
-export declare function packageJsonGenerator(type: templateType, callback?: (stat: Stats) => void): void;
+import type { templateType, projectInquirerAnswers } from '../types';
+export declare function packageJsonGenerator(config: projectInquirerAnswers, callback?: () => void): void;
 export declare function copyCpackTemplate(type: templateType, callback: () => void): void;
+export declare function removePackageLock(packageManager: projectInquirerAnswers['packageManager']): void;
