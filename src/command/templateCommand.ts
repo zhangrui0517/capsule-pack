@@ -5,25 +5,16 @@ import { getCtemplatePath, getCurrentTemplatePath, projectPath } from '../utils/
 import { packageJsonGenerator, copyCpackTemplate } from './utils'
 /** type */
 import type { Command } from 'commander'
-import type { Answers } from 'inquirer'
+import type { projectInquirerAnswers } from '../types'
 
 function templateCommand(program: Command) {
   /** 创建项目 */
   program
     .command('create')
-    .argument('[type]')
     .description('用于快速创建开发环境，提供开发构建脚手架')
-    .action(type => {
+    .action(() => {
       const dirList = fs.readdirSync(getCtemplatePath())
-      /** 如果存在指定模板，则直接创建 */
-      if (dirList.indexOf(type) > -1) {
-        console.log(`开始创建${type}模板`)
-        copyCpackTemplate(type, () => {
-          console.log('模板创建成功')
-          packageJsonGenerator(type)
-        })
-      } else {
-        const inquirer = require('inquirer')
+      const inquirer = require('inquirer')
         /** 不存在指定类型，则展示所有模板选项 */
         inquirer
           .prompt([
@@ -32,17 +23,23 @@ function templateCommand(program: Command) {
               name: 'type',
               message: '请选择模板',
               choices: dirList
+            },
+            {
+              type: 'list',
+              name: 'packageManager',
+              message: '使用的包管理器',
+              choices: ['npm', 'yarn']
             }
           ])
-          .then((answers: Answers) => {
-            const { type } = answers
+          .then((answers: projectInquirerAnswers) => {
+            const { type, packageManager } = answers
             console.info(`开始创建${type}模板`)
-            copyCpackTemplate(type, () => {
-              console.info('模板创建成功')
-              packageJsonGenerator(type)
+            packageJsonGenerator({type, packageManager}, () => {
+              copyCpackTemplate(type, () => {
+                console.info('模板创建成功')
+              })
             })
           })
-      }
     })
 
   /** 创建自定义模板 */
