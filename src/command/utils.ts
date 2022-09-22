@@ -44,7 +44,10 @@ export function packageJsonGenerator(type: templateType, callback?: (stat: Stats
   fs.stat(packageJson, (err: NodeJS.ErrnoException, stat: Stats) => {
     if (err) {
       console.info('初始化package.json文件')
-      child_process.spawnSync('npm',['init', '-y'])
+      const packageSpawn = child_process.spawnSync('npm',['init', '-y'], {
+        shell: true
+      })
+      console.error(packageSpawn.output.toString())
     }
     console.info('往package.json注入执行脚本和相关依赖信息')
     const commonPackageTemplate = packageByTemplate['common']
@@ -56,12 +59,17 @@ export function packageJsonGenerator(type: templateType, callback?: (stat: Stats
         spaces: '\t'
       })
     console.info('开始安装预置依赖')
+    removePackageLock()
     const currentDepPackage = [...commonPackageTemplate.dependencies, ...packageByTemplate[type].dependencies]
-    const depSpawn = currentDepPackage && child_process.spawnSync('npm',['install', ...currentDepPackage, '-save'])
+    const depSpawn = currentDepPackage && child_process.spawnSync('npm',['install', ...currentDepPackage, '-save'], {
+      shell: true
+    })
     console.info(depSpawn?.stdout.toString())
-    child_process.spawn('npm',['cache', 'clean', '--force'])
+    removePackageLock()
     const currentDevPackage = [...commonPackageTemplate.devDependencies, ...packageByTemplate[type].devDependencies]
-    const devSpawn = currentDevPackage && child_process.spawnSync('npm',['install', ...currentDevPackage, '--save-dev'])
+    const devSpawn = currentDevPackage && child_process.spawnSync('npm',['install', ...currentDevPackage, '--save-dev'], {
+      shell: true
+    })
     console.info(devSpawn?.stdout.toString())
     console.info('package.json创建完成')
     callback && callback(stat)
@@ -76,4 +84,11 @@ export function copyCpackTemplate(type: templateType, callback: () => void) {
     }
     callback && callback()
   })
+}
+
+export function removePackageLock () {
+  const packageLock = path.resolve(projectPath,'./package-lock.json')
+  if(fs.existsSync(packageLock)) {
+    fs.unlinkSync(packageLock)
+  }
 }
