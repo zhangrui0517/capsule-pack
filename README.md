@@ -1,7 +1,7 @@
 <div align="center">
   <br>
   <h1>capsule-pack</h1>
-  <p>
+  <p align="left">
     支持快速开发项目的脚手架，支持配置自定义和项目模板、自定义模版生成。
     预置react、工具库（开发中）、组件库（开发中）开发模板，使用webpack5进行构建。
   </p>
