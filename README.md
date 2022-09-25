@@ -11,7 +11,7 @@
 1. [安装](#install)
 2. [使用](#usage)
 
-<h2 align="center"><a href="#install">安装</a></h2>
+<h2 align="center" id="install">安装</h2>
 <br/>
 
 Install with npm:
