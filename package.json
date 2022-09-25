@@ -6,19 +6,15 @@
 	"scripts": {
 		"dev": "npx tsc --watch -p ./tsconfig.json",
 		"prebuild": "node ./script/clean.js",
-		"build": "npx tsc -p ./tsconfig.json"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
+		"build": "npx tsc -p ./tsconfig.json || exit 0",
+		"lint-staged": "lint-staged",
+		"prepare": "husky install"
 	},
 	"lint-staged": {
 		"./src/**/*.*": [
 			"prettier --write",
 			"eslint --cache --fix",
-			"yarn run build",
-			"git add"
+			"yarn run build"
 		]
 	},
 	"repository": {
@@ -51,6 +47,7 @@
 		"@typescript-eslint/parser": "^5.37.0",
 		"eslint": "^8.23.1",
 		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-react": "^7.31.8",
 		"husky": "^8.0.1",
 		"lint-staged": "^13.0.3",
