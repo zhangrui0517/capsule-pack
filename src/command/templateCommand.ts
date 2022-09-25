@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 /** utils */
 import inquirer from 'inquirer'
+import { Listr } from 'listr2'
 import { getCtemplatePath, getCurrentTemplatePath, projectPath } from '../utils/path'
 import { packageJsonGenerator, copyCpackTemplate } from './utils'
 /** type */
@@ -16,31 +17,42 @@ function templateCommand(program: Command) {
     .description('用于快速创建开发环境，提供开发构建脚手架')
     .action(() => {
       const dirList = fs.readdirSync(getCtemplatePath())
-        /** 不存在指定类型，则展示所有模板选项 */
-        inquirer
-          .prompt([
+      /** 不存在指定类型，则展示所有模板选项 */
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            name: 'type',
+            message: '请选择模板',
+            choices: dirList
+          },
+          {
+            type: 'list',
+            name: 'packageManager',
+            message: '使用的包管理器',
+            choices: ['npm', 'yarn']
+          }
+        ])
+        .then((answers: projectInquirerAnswers) => {
+          const { type, packageManager } = answers
+          const task = new Listr([
             {
-              type: 'list',
-              name: 'type',
-              message: '请选择模板',
-              choices: dirList
+              title: '处理package.json文件',
+              task: () => {
+                return packageJsonGenerator({ type, packageManager })
+              }
             },
             {
-              type: 'list',
-              name: 'packageManager',
-              message: '使用的包管理器',
-              choices: ['npm', 'yarn']
+              title: `创建${type}模板`,
+              task: () => {
+                return copyCpackTemplate(type)
+              }
             }
           ])
-          .then((answers: projectInquirerAnswers) => {
-            const { type, packageManager } = answers
-            console.info(`开始创建${type}模板`)
-            packageJsonGenerator({type, packageManager}, () => {
-              copyCpackTemplate(type, () => {
-                console.info('模板创建成功')
-              })
-            })
+          task.run().catch(err => {
+            console.error(err)
           })
+        })
     })
 
   /** 创建自定义模板 */
@@ -50,7 +62,7 @@ function templateCommand(program: Command) {
     .argument('[file]')
     .action((/* file */) => {
       const templatePath = getCurrentTemplatePath()
-      if(fs.existsSync(templatePath)) {
+      if (fs.existsSync(templatePath)) {
         const dirList = fs.readdirSync(templatePath)
         inquirer
           .prompt([
@@ -60,7 +72,7 @@ function templateCommand(program: Command) {
               message: '请选择模板',
               choices: dirList
             }
-             ])
+          ])
           .then((answers: Record<string, any>) => {
             const { type } = answers
             fs.copySync(path.resolve(templatePath, type), path.resolve(projectPath, type))

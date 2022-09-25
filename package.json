@@ -8,7 +8,7 @@
 		"prebuild": "node ./script/clean.js",
 		"build": "npx tsc -p ./tsconfig.json || exit 0",
 		"lint-staged": "lint-staged",
-		"prepare": "husky install",
+		"postinstall": "husky install",
 		"prepublish": "npx tsc -p ./tsconfig.json || exit 0"
 	},
 	"lint-staged": {
@@ -52,6 +52,7 @@
 		"eslint-plugin-react": "^7.31.8",
 		"husky": "^8.0.1",
 		"lint-staged": "^13.0.3",
+		"listr2": "^5.0.5",
 		"prettier": "^2.7.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
@@ -71,6 +72,7 @@
 		"css-loader": "^6.7.1",
 		"css-minimizer-webpack-plugin": "^4.0.0",
 		"eslint-webpack-plugin": "^3.2.0",
+		"execa": "5.1.1",
 		"fs-extra": "^10.1.0",
 		"glob": "^8.0.3",
 		"html-webpack-plugin": "^5.5.0",
