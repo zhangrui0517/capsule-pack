@@ -26,7 +26,7 @@ Install with yarn:
 yarn add capsule-pack --dev
 ```
 
-<h2 align="center" id="usage">用法</h2>
+<h2 align="center" id="usage">使用</h2>
 <br/>
 
 可直接指定模板，目前支持react模板，工具库和组件库模板正在开发中。
