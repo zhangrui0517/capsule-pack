@@ -6,7 +6,6 @@ import prodConfig from '../config/webpack.prod'
 import { Command } from 'commander'
 import type { Stats } from 'webpack'
 
-
 function webpackCommand(program: Command) {
   program
     .command('dev')
@@ -18,7 +17,7 @@ function webpackCommand(program: Command) {
             const error = err || stats.hasErrors()
             console.error(error)
           }
-          console.log(stats.toString())
+          console.info(stats.toString())
         }
       })
     })
@@ -32,10 +31,10 @@ function webpackCommand(program: Command) {
       const server = new WebpackDevServer(devServerOptions, compiler)
       server.start()
       server.startCallback(() => {
-        console.log('Successfully started')
+        console.info('Successfully started')
       })
       server.stopCallback(() => {
-        console.log('Successfully stop')
+        console.info('Successfully stop')
       })
     })
   program
@@ -48,7 +47,7 @@ function webpackCommand(program: Command) {
             const error = err || stats.hasErrors()
             console.error(error)
           }
-          console.log(stats.toString())
+          console.info(stats.toString())
         }
       })
     })
