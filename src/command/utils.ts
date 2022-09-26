@@ -3,7 +3,7 @@ import path from 'path'
 /** util */
 import { Listr } from 'listr2'
 import execa from 'execa'
-import { getPackageJson, getCtemplatePath, projectPath } from '../utils/path'
+import { getPackageJson, getCtemplatePath, projectPath, packagePath } from '../utils/path'
 /** type */
 import type { templateType, projectInquirerAnswers } from '../types'
 
@@ -98,8 +98,11 @@ export function copyCpackTemplate(type: templateType) {
     {
       title: '模板创建中',
       task: () => {
-        fs.copySync(path.resolve(getCtemplatePath(), type), projectPath)
-        return ''
+        return Promise.all([
+          fs.copy(path.resolve(getCtemplatePath(), type), projectPath),
+          fs.copy(path.resolve(packagePath, './.prettierrc'), path.resolve(projectPath, './.prettierrc')),
+          fs.copy(path.resolve(packagePath, './.editorconfig'), path.resolve(projectPath, './.editorconfig'))
+        ])
       }
     }
   ])
