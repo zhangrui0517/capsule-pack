@@ -88,10 +88,10 @@ export function packageJsonGenerator(config: projectInquirerAnswers) {
         removePackageLock(packageManager)
         const currentDepPackage = [...commonPackageTemplate.dependencies, ...packageByTemplate[type].dependencies]
         const currentDevPackage = [...commonPackageTemplate.devDependencies, ...packageByTemplate[type].devDependencies]
-        return Promise.all([
-          execa(packageManager, [packManagerCommand[packageManager], ...currentDepPackage, '-S']),
-          execa(packageManager, [packManagerCommand[packageManager], ...currentDevPackage, '-D'])
-        ])
+        const taskList = []
+        currentDepPackage.length && taskList.push(execa(packageManager, [packManagerCommand[packageManager], ...currentDepPackage, '-S']))
+        currentDevPackage.length && taskList.push(execa(packageManager, [packManagerCommand[packageManager], ...currentDevPackage, '-D']))
+        return Promise.all(taskList)
       }
     }
   ])
