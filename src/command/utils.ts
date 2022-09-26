@@ -20,14 +20,15 @@ const packageByTemplate: Record<
   common: {
     scripts: {
       dev: 'npx cpack dev',
+      build: 'npx cpack build',
       'dev-server': 'npx cpack dev-server',
-      build: 'npx cpack build'
+      'lint-staged': 'lint-staged'
     },
     'lint-staged': {
       './src/**/*.*': ['prettier --write', 'eslint --cache --fix', 'yarn run build']
     },
     dependencies: [],
-    devDependencies: ['lint-staged', 'husky', 'prettier', 'typescript', '@typescript-eslint/eslint-plugin', '@typescript-eslint/parser', 'eslint-config-prettier', 'eslint']
+    devDependencies: ['lint-staged', 'husky', 'prettier', 'typescript', '@typescript-eslint/eslint-plugin', '@typescript-eslint/parser', 'eslint-config-prettier', 'eslint', 'eslint-plugin-prettier']
   },
   react: {
     dependencies: ['react', 'react-dom'],
