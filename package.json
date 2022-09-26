@@ -8,7 +8,6 @@
 		"prebuild": "node ./script/clean.js",
 		"build": "npx tsc -p ./tsconfig.json || exit 0",
 		"lint-staged": "lint-staged",
-		"postinstall": "husky install",
 		"prepublish": "npx tsc -p ./tsconfig.json || exit 0"
 	},
 	"lint-staged": {
