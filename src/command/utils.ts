@@ -12,6 +12,7 @@ const packageByTemplate: Record<
   templateType | 'common',
   {
     scripts?: Record<string, string>
+    'lint-staged'?: Record<string, string | string[]>
     devDependencies: string[]
     dependencies: string[]
   }
@@ -22,8 +23,11 @@ const packageByTemplate: Record<
       'dev-server': 'npx cpack dev-server',
       build: 'npx cpack build'
     },
+    'lint-staged': {
+      './src/**/*.*': ['prettier --write', 'eslint --cache --fix', 'yarn run build']
+    },
     dependencies: [],
-    devDependencies: ['husky', 'prettier', 'typescript', '@typescript-eslint/eslint-plugin', '@typescript-eslint/parser', 'eslint-config-prettier', 'eslint']
+    devDependencies: ['lint-staged', 'husky', 'prettier', 'typescript', '@typescript-eslint/eslint-plugin', '@typescript-eslint/parser', 'eslint-config-prettier', 'eslint']
   },
   react: {
     dependencies: ['react', 'react-dom'],
@@ -101,7 +105,8 @@ export function copyCpackTemplate(type: templateType) {
         return Promise.all([
           fs.copy(path.resolve(getCtemplatePath(), type), projectPath),
           fs.copy(path.resolve(packagePath, './.prettierrc'), path.resolve(projectPath, './.prettierrc')),
-          fs.copy(path.resolve(packagePath, './.editorconfig'), path.resolve(projectPath, './.editorconfig'))
+          fs.copy(path.resolve(packagePath, './.editorconfig'), path.resolve(projectPath, './.editorconfig')),
+          fs.copy(path.resolve(packagePath, './.husky'), path.resolve(projectPath, './.husky'))
         ])
       }
     }

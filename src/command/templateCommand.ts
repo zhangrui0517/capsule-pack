@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import path from 'path'
 /** utils */
 import inquirer from 'inquirer'
+import execa from 'execa'
 import { Listr } from 'listr2'
 import { getCtemplatePath, getCurrentTemplatePath, projectPath } from '../utils/path'
 import { packageJsonGenerator, copyCpackTemplate } from './utils'
@@ -46,6 +47,12 @@ function templateCommand(program: Command) {
               title: `创建${type}模板`,
               task: () => {
                 return copyCpackTemplate(type)
+              }
+            },
+            {
+              title: '项目初始化',
+              task: () => {
+                return execa('npx', ['husky', 'install'])
               }
             }
           ])
