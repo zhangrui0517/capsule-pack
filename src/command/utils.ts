@@ -74,7 +74,9 @@ export function packageJsonGenerator(config: projectInquirerAnswers) {
       task: () => {
         const editJson = fs.readJsonSync(packageJson)
         editJson.scripts = editJson.scripts || {}
+        editJson['lint-staged'] = editJson['lint-staged'] || {}
         Object.assign(editJson.scripts, commonPackageTemplate.scripts)
+        Object.assign(editJson['lint-staged'], commonPackageTemplate['lint-staged'])
         editJson &&
           fs.writeJSONSync(packageJson, editJson, {
             spaces: '\t'
