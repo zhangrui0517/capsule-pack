@@ -18,6 +18,12 @@ const devServer: DevServerConfiguration = {
   port: 8800,
   static: {
     directory: getOutputDirPath()
+  },
+  client: {
+    overlay: {
+      errors: true,
+      warnings: false
+    }
   }
 }
 
