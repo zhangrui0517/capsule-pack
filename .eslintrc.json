@@ -31,10 +31,7 @@
   // 规则
   "rules": {
     "linebreak-style": "off",
-    "quotes": [
-        "error",
-        "single"
-    ],
+    "quotes": "off",
     "semi": [
         "error",
         "never"
