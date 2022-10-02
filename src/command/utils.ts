@@ -25,7 +25,7 @@ const packageByTemplate: Record<
       'lint-staged': 'lint-staged'
     },
     'lint-staged': {
-      './src/**/*.*': ['prettier --write', 'eslint --cache --fix', 'yarn run build']
+      './src/**/*.*': ['npx prettier --write', 'npx eslint --cache --fix']
     },
     dependencies: [],
     devDependencies: ['lint-staged', 'husky', 'prettier', 'typescript', '@typescript-eslint/eslint-plugin', '@typescript-eslint/parser', 'eslint-config-prettier', 'eslint', 'eslint-plugin-prettier']
