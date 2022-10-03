@@ -1,12 +1,23 @@
 import path from 'path'
 import { polyfillIO } from '../utils/resource'
 import htmlWebpackInsertAsset from '../plugins/htmlWebpackInsertAsset'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import HtmlWebpackPlugins from 'html-webpack-plugin'
 import { projectPath } from '../utils/path'
 /** type */
 import { CustomExtraConfig } from '../types'
 import { Configuration } from 'webpack'
 
+/** 设置分析插件到plugin中 */
+export function setAnalyzerPlugin(extraConfig: CustomExtraConfig, config: Configuration) {
+  const { analyzer } = extraConfig
+  if (analyzer) {
+    config.plugins = config.plugins || []
+    config.plugins.push(new BundleAnalyzerPlugin(analyzer))
+  }
+}
+
+/** 设置HtmlWebpackPlugins */
 export function setHtmlPlugin(extraConfig: CustomExtraConfig, config: Configuration) {
   const { html = true, root } = extraConfig
   if (html) {

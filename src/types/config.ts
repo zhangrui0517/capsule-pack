@@ -1,4 +1,5 @@
 import { Configuration } from 'webpack'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
 export type CustomConfig = {
   /** webpackConfig 配置回调，返回的值是webpack打包使用的最终配置 */
@@ -20,4 +21,6 @@ export type CustomExtraConfig = {
   dynamicPolyfill?: true
   /** 动态polyfill 所使用的CDN，仅在dynamicPolyfill为true时使用 */
   dynamicPolyfillCDN?: string
+  /** 是否启用分析模式 */
+  analyzer?: BundleAnalyzerPlugin.Options
 }
