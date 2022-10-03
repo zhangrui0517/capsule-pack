@@ -19,7 +19,7 @@ export function setAnalyzerPlugin(extraConfig: CustomExtraConfig, config: Config
 
 /** 设置HtmlWebpackPlugins */
 export function setHtmlPlugin(extraConfig: CustomExtraConfig, config: Configuration) {
-  const { html = true, root } = extraConfig
+  const { html = true, root = 'src' } = extraConfig
   if (html) {
     const defaultTemplate = path.resolve(projectPath, `./${root}/index.html`)
     config.plugins = config.plugins || []
