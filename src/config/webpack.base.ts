@@ -4,7 +4,7 @@ import webpackBar from 'webpackBar'
 import path from 'path'
 // utils
 import { projectPath, getCacheDirPath } from '../utils/path'
-import { setHtmlPlugin } from './webpack.util'
+import { setHtmlPlugin, setAnalyzerPlugin } from './webpack.util'
 // types
 import type { CustomExtraConfig } from '../types'
 import type { Configuration } from 'webpack'
@@ -107,7 +107,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       }
     }
   }
-  /** 根据参数按需注入HTML模板或去除 */
+  setAnalyzerPlugin(extraConfig, config)
   setHtmlPlugin(extraConfig, config)
   return config
 }
