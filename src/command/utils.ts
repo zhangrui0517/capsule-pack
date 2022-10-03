@@ -109,6 +109,8 @@ export function copyCpackTemplate(type: templateType) {
           fs.copy(path.resolve(getCtemplatePath(), type), projectPath),
           fs.copy(path.resolve(packagePath, './.prettierrc'), path.resolve(projectPath, './.prettierrc')),
           fs.copy(path.resolve(packagePath, './.editorconfig'), path.resolve(projectPath, './.editorconfig')),
+          fs.copy(path.resolve(packagePath, './.eslintignore'), path.resolve(projectPath, './.eslintignore')),
+          fs.copy(path.resolve(packagePath, './.npmignore'), path.resolve(projectPath, './.npmignore')),
           fs.copy(path.resolve(packagePath, './.husky'), path.resolve(projectPath, './.husky'))
         ])
       }
