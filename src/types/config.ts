@@ -10,6 +10,12 @@ export type CustomExtraConfig = {
   react?: boolean
   /** 要打包的目录，默认为src */
   root?: string
+  /** 是否需要生成HTML文件 */
+  html?:
+    | {
+        template?: string
+      }
+    | boolean
   /** 是否需要动态polyfill，默认关闭，开启默认使用jsdelivr CDN */
   dynamicPolyfill?: true
   /** 动态polyfill 所使用的CDN，仅在dynamicPolyfill为true时使用 */

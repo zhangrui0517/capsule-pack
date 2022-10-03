@@ -1,11 +1,10 @@
 // plugins
-import HtmlWebpackPlugins from 'html-webpack-plugin'
 import webpackBar from 'webpackBar'
 // node api
 import path from 'path'
 // utils
 import { projectPath, getCacheDirPath } from '../utils/path'
-import { polyfillInsert } from './webpack.util'
+import { setHtmlPlugin } from './webpack.util'
 // types
 import type { CustomExtraConfig } from '../types'
 import type { Configuration } from 'webpack'
@@ -84,12 +83,7 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
         }
       ]
     },
-    plugins: [
-      new HtmlWebpackPlugins({
-        template: path.resolve(projectPath, `./${root}/index.html`)
-      }),
-      new webpackBar()
-    ],
+    plugins: [new webpackBar()],
     resolve: {
       modules: [path.resolve(projectPath, 'node_modules')],
       extensions: ['.ts', '.tsx', '.js', '.jsx']
@@ -113,8 +107,8 @@ function getBaseConfig(extraConfig: CustomExtraConfig = {}): Configuration {
       }
     }
   }
-  /** 根据参数按需插入polyfill脚本 */
-  polyfillInsert(extraConfig, config)
+  /** 根据参数按需注入HTML模板或去除 */
+  setHtmlPlugin(extraConfig, config)
   return config
 }
 

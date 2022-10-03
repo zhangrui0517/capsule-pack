@@ -6,7 +6,9 @@ const config = {
   /** 是否启用babel对react的解析 */
   // react: true,
   /** webpack config 自定义调整，会通过webpack.merge与预设webpack配置合并 */
-  // config: (webpackConfig) => webpackConfig
+  // config: (webpackConfig) => webpackConfig,
+  /** 自定义html模板路径或关闭html创建 */
+  html: false
 }
 
 module.exports = config

@@ -1,11 +1,28 @@
+import path from 'path'
 import { polyfillIO } from '../utils/resource'
 import htmlWebpackInsertAsset from '../plugins/htmlWebpackInsertAsset'
+import HtmlWebpackPlugins from 'html-webpack-plugin'
+import { projectPath } from '../utils/path'
 /** type */
 import { CustomExtraConfig } from '../types'
 import { Configuration } from 'webpack'
 
+export function setHtmlPlugin(extraConfig: CustomExtraConfig, config: Configuration) {
+  const { html = true, root } = extraConfig
+  if (html) {
+    const defaultTemplate = path.resolve(projectPath, `./${root}/index.html`)
+    config.plugins = config.plugins || []
+    config.plugins.push(
+      new HtmlWebpackPlugins({
+        template: typeof html === 'object' && html.template ? html.template : defaultTemplate
+      })
+    )
+    setPolyfillHtml(extraConfig, config)
+  }
+}
+
 /** 根据自定义参数，插入polyfill脚本到html中 */
-export function polyfillInsert(extraConfig: CustomExtraConfig, config: Configuration) {
+export function setPolyfillHtml(extraConfig: CustomExtraConfig, config: Configuration) {
   const { dynamicPolyfill, dynamicPolyfillCDN } = extraConfig
   if (dynamicPolyfill) {
     config.plugins = config.plugins || []
