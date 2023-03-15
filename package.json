@@ -3,13 +3,55 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepare": "npx husky install",
+    "lint:script": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./",
+    "lint:style": "stylelint --fix \"src/**/*.{css,scss}\"",
+    "dev": "npx tsc --watch -p ./tsconfig.json",
+    "build": "npx tsc -p ./tsconfig.json || exit 0"
   },
-  "keywords": [],
-  "author": "",
+  "husky": {
+    "pre-commit": "npm run lint"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,tsx,ts}": [
+      "npm run lint:script",
+      "git add ."
+    ]
+  },
+  "bin": {
+    "cpack": "./bin/index.js"
+  },
+  "keywords": [
+    "quick template",
+    "development template",
+    "react",
+    "vite",
+    "template"
+  ],
+  "author": "zhangrui0517",
   "license": "ISC",
   "devDependencies": {
-    "vite": "^4.1.1"
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
+    "@types/fs-extra": "^11.0.1",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^18.11.18",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "commitlint": "^17.4.4",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "lint-staged": "^13.1.2",
+    "prettier": "^2.8.4",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "commander": "^10.0.0",
+    "fs-extra": "^11.1.0",
+    "inquirer": "^9.1.4"
   }
 }

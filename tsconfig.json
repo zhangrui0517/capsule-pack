@@ -1,12 +1,31 @@
 {
-  "extends": "./tsconfig.base.json",
   "compilerOptions": {
+     /* 强制区分大小写 */
+     "forceConsistentCasingInFileNames": true,
+     /* 是否删除注释 */
+     "removeComments": true,
+     /* 是否启用严格模式 */
+     "strict": true,
+     /* 在代码中注入'use strict' */
+     "alwaysStrict": true,
+     /* 检查是否有未使用的变量 */
+     "noUnusedLocals": true,
+     /* 检查是否有参数未使用 */
+     "noUnusedParameters": true,
+     /* 检查函数是否没有有效返回 */
+     "noImplicitReturns": true,
+     /* 使用索引访问时，将“未定义”添加到类型 */
+     "noUncheckedIndexedAccess": true,
+     /* 跳过对库文件的检查 */
+     "skipLibCheck": true,
+     /*  支持默认导入 */
+     "allowSyntheticDefaultImports":true,
     /* 指定ECMAScript目标版本 */
-    "target": "es2017",
+    "target": "ESNext",
     /* 默认注入的库 */
     "lib": ["es6", "es2017"],
     /* 构建产物的规范 */
-    "module": "CommonJS",
+    "module": "ES2022",
     /* 允许export=导出，由import from 导入 */
     "esModuleInterop": true,
     /* 生成声明文件，开启后会自动生成声明文件 */
@@ -18,7 +37,8 @@
     /* 是否不生成文件 */
     "noEmit": false,
     /* 模块解析 */
-    "moduleResolution":"Node"
+    "moduleResolution":"Node",
+    "resolveJsonModule": true
   },
   "include": ["./src"],
   /* 不检查的目录 */
