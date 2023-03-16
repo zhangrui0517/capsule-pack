@@ -1,9 +1,9 @@
 import { Command } from 'commander'
-import { getPkg } from './utils/index.js'
+import { getPkgJSON } from './utils/index.js'
 import { createTemplateCommand } from './command/index.js'
 
 function runCpack() {
-  const packageJson = getPkg()
+  const packageJson = getPkgJSON()
   const program = new Command()
   program
     .name('capsule-pack')
