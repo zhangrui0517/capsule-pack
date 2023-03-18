@@ -7,10 +7,7 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    // 接入 prettier 的规则
-    "prettier",
     "plugin:prettier/recommended"
   ],
   "overrides": [],
@@ -22,11 +19,9 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    // 开启 prettier 自动修复的功能
     "prettier/prettier": "error",
-    "indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single"],
     "semi": ["error", "never"],
