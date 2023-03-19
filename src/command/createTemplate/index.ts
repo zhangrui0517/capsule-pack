@@ -3,8 +3,8 @@
  * Read the template under the template folder
  */
 import type { Command } from 'commander'
-import inquirer from 'inquirer'
-import { getTemplateChoices, createTemplate } from './util.js'
+import { createTemplate, getTemplateChoices } from './util.js'
+import { selectTemplateInquirer } from './inquirer.js'
 
 export function createTemplateCommand(program: Command): Command {
 	program
@@ -14,19 +14,8 @@ export function createTemplateCommand(program: Command): Command {
 		)
 		.action(async () => {
 			const { choices, paths } = getTemplateChoices()
-			const answer = await inquirer
-				.prompt([
-					{
-						type: 'list',
-						name: 'template',
-						message: 'Select the template you need',
-						choices
-					}
-				])
-				.catch((err) => {
-					console.error(err)
-				})
-			const { template } = answer
+			const templateAnswer = selectTemplateInquirer(choices)
+			const { template } = await templateAnswer
 			const selectTemplatePath = paths[Number(template[0])]
 			if (selectTemplatePath) {
 				createTemplate(selectTemplatePath)

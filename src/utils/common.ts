@@ -1,10 +1,6 @@
 export function forFun<T>(
 	array: Array<T>,
-	callback: (
-		item: T,
-		index: number,
-		array: Array<T>
-	) => void | boolean | 'continue'
+	callback: (item: T, index: number, array: Array<T>) => void | boolean | 'continue'
 ) {
 	if (!array) {
 		console.error('Error at forFun! invalid param <array>.')
