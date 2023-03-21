@@ -9,9 +9,7 @@ import { selectTemplateInquirer } from './inquirer.js'
 export function createTemplateCommand(program: Command): Command {
 	program
 		.command('create')
-		.description(
-			'Quickly create development templates. You can choose inner templates or custom templates'
-		)
+		.description('Quickly create development templates. You can choose inner templates or custom templates')
 		.action(async () => {
 			const { choices, paths } = getTemplateChoices()
 			const templateAnswer = selectTemplateInquirer(choices)

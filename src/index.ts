@@ -5,10 +5,7 @@ import { createTemplateCommand } from './command/index.js'
 function runCpack() {
 	const packageJson = getPkgJSON()
 	const program = new Command()
-	program
-		.name('capsule-pack')
-		.description('Quickly create a project template')
-		.version(packageJson.version)
+	program.name('capsule-pack').description('Quickly create a project template').version(packageJson.version)
 	createTemplateCommand(program)
 	program.parse()
 }
