@@ -15,9 +15,7 @@ export function getPkgJSON() {
 	const packageJsonPath = getPkgPath('package.json')
 	const packageJson = fse.readJSONSync(packageJsonPath, { throws: false })
 	if (!packageJson) {
-		console.error(
-			'package.json not found. Please find it in the directory where package.json exists'
-		)
+		console.error('package.json not found. Please find it in the directory where package.json exists')
 	}
 	return packageJson
 }
@@ -31,42 +29,60 @@ export function getPkgPath(filename?: string) {
 	return packageRoot
 }
 
-export function getDirFiles(options: {
-	dirName: string
-	rootDir?: string
-	filterType?: 'dir' | 'file'
-}):
+export function getDirFiles(
+	dirName: string,
+	options: {
+		rootDir?: string
+		filterType?: 'dir' | 'file'
+		deep?: boolean
+	} = {}
+):
 	| {
-			files: string[]
-			filesPath: string[]
+			fileNames: string[]
+			filePaths: string[]
 	  }
 	| undefined {
-	const { dirName, rootDir, filterType } = options
-	const currentDirPath = isAbsolute(dirName)
-		? normalize(dirName)
-		: resolve(rootDir || process.cwd(), `./${dirName}`)
+	const { rootDir, filterType, deep = false } = options
+	const currentDirPath = isAbsolute(dirName) ? normalize(dirName) : resolve(rootDir || process.cwd(), `./${dirName}`)
 	try {
-		const fileList = fse.readdirSync(currentDirPath)
-		const filesPath: string[] = []
-		const filterIndex: number[] = []
-		forFun(fileList, (file, index) => {
-			const filePath = resolve(currentDirPath, `./${file}`)
-			if (filterType) {
-				const stat = fse.statSync(filePath)
-				if (stat.isDirectory()) {
-					filterType === 'dir' ? filesPath.push(filePath) : filterIndex.push(index)
-				} else {
-					filterType === 'file' ? filesPath.push(filePath) : filterIndex.push(index)
+		const fileDirentList = fse.readdirSync(currentDirPath, {
+			withFileTypes: true
+		})
+		const filePaths: string[] = []
+		const fileNames: string[] = []
+		forFun(fileDirentList, (file) => {
+			const fileName = file.name
+			const filePath = resolve(currentDirPath, `./${file.name}`)
+			switch (filterType) {
+				case 'dir': {
+					file.isDirectory() && fileNames.push(fileName) && filePaths.push(filePath)
+					break
 				}
-			} else {
-				filesPath.push(filePath)
+				case 'file': {
+					file.isFile() && fileNames.push(fileName) && filePaths.push(filePath)
+					break
+				}
+				default: {
+					filePaths.push(filePath)
+					fileNames.push(fileName)
+				}
+			}
+			if (deep && file.isDirectory()) {
+				const { fileNames: subFileNames, filePaths: subFilePaths } =
+					getDirFiles(filePath, {
+						deep,
+						filterType,
+						rootDir
+					}) || {}
+				if (subFilePaths) {
+					filePaths.push(...subFilePaths)
+					fileNames.push(...subFileNames!)
+				}
 			}
 		})
 		return {
-			files: filterIndex.length
-				? fileList.filter((item, index) => filterIndex.indexOf(index) === -1)
-				: fileList,
-			filesPath
+			fileNames,
+			filePaths
 		}
 	} catch (err) {
 		return undefined

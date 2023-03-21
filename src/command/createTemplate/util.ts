@@ -1,8 +1,10 @@
 import { getDirFiles, getPkgPath, forFun, formatPath } from '../../utils/index.js'
-import { inputTemplateLocation } from './inquirer.js'
-import { TemplateConfig } from '../../types'
+import { inputTemplateLocation, getInquirerAnswer } from './inquirer.js'
 import { parse, resolve } from 'path'
 import fse from 'fs-extra'
+const { readFileSync, writeFileSync, statSync, copySync } = fse
+
+const templateFlagRegex = new RegExp('\\$(\\w|\\d|[\u4e00-\u9fa5])+\\$', 'g')
 
 export function formatTemplateChoices(
 	templateList: Array<{
@@ -27,15 +29,11 @@ export function formatTemplateChoices(
 }
 
 export function getTemplateChoices() {
-	const { files: innerTemplate, filesPath: innerTemplatePath } =
-		getDirFiles({
-			dirName: 'template',
+	const { fileNames: innerTemplate, filePaths: innerTemplatePath } =
+		getDirFiles('template', {
 			rootDir: getPkgPath()
 		}) || {}
-	const { files: customTemplate, filesPath: customTemplatePath } =
-		getDirFiles({
-			dirName: 'template'
-		}) || {}
+	const { fileNames: customTemplate, filePaths: customTemplatePath } = getDirFiles('template') || {}
 	const result = []
 	if (innerTemplate?.length) {
 		result.push({
@@ -54,69 +52,50 @@ export function getTemplateChoices() {
 	return formatTemplateChoices(result)
 }
 
-export function copyAndFormatTemplateFile(
-	filePath: string,
-	filesToPath: string,
-	config?: TemplateConfig,
-	options: {
-		flag?: string
-	} = {}
-) {
-	const { flag = '$' } = options
-	const rs = fse.createReadStream(filePath, {
-		encoding: 'utf-8',
-		emitClose: true,
-		highWaterMark: 1
-	})
-	const ws = fse.createWriteStream(filesToPath, {
-		emitClose: true
-	})
-	let cacheChunk = ''
-	rs.on('data', (chunk) => {
-		if (chunk === flag) {
-			if (cacheChunk) {
-				cacheChunk += chunk
-				const regex = new RegExp(`\\${flag}(\\w|\\d|[\u4e00-\u9fa5])+\\${flag}`, 'g')
-				if (regex.test(cacheChunk)) {
-					cacheChunk = cacheChunk.replace(regex, 'changeName')
-				}
-				!ws.write(cacheChunk) && rs.pause()
-				cacheChunk = ''
-				return
-			}
-			cacheChunk += chunk
-			return
+export async function replaceTemplateString(filePath: string) {
+	try {
+		const fileData = readFileSync(filePath, {
+			encoding: 'utf-8'
+		})
+		const templateFlags = fileData.match(templateFlagRegex)
+		if (templateFlags) {
+			const templateFields = await getInquirerAnswer(
+				templateFlags.map((item) => ({
+					type: 'input',
+					message: item,
+					name: item
+				}))
+			)
+			const formatFileData = fileData.toString().replace(templateFlagRegex, (match) => {
+				return templateFields?.[match] || match
+			})
+			writeFileSync(filePath, formatFileData)
 		}
-		if (cacheChunk) {
-			cacheChunk += chunk
-			return
-		}
-		if (!ws.write(chunk)) {
-			rs.pause()
-		}
-	})
-	ws.on('drain', () => {
-		rs.resume()
-	})
+	} catch (err) {
+		console.error(err)
+	}
 }
 
 export async function createTemplate(templatePath: string) {
-	const stat = fse.statSync(templatePath)
+	const stat = statSync(templatePath)
+	const { location } = await inputTemplateLocation()
+	const formatLocation = formatPath(location)
+	const baseName = parse(templatePath).base
+	const toPath = resolve(formatLocation, `./${baseName}`)
 	if (stat.isDirectory()) {
-		const templateFiles = getDirFiles({
-			dirName: templatePath
-		})
-		console.log('templateFiles: ', templateFiles)
+		copySync(templatePath, toPath)
+		console.log('toPath: ', toPath)
+		const { filePaths } =
+			getDirFiles(toPath, {
+				deep: true,
+				filterType: 'file'
+			}) || {}
+		filePaths &&
+			forFun(filePaths, (pathItem) => {
+				replaceTemplateString(pathItem)
+			})
 	} else {
-		const { location } = await inputTemplateLocation()
-		const fileName = parse(templatePath).base
-		const filesToPath = resolve(formatPath(location), `./${fileName}`)
-		copyAndFormatTemplateFile(templatePath, filesToPath, [
-			{
-				flag: '$name$',
-				message: 'sss',
-				type: 'list'
-			}
-		])
+		copySync(templatePath, toPath)
+		await replaceTemplateString(toPath)
 	}
 }
