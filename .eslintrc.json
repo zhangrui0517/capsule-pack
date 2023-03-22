@@ -25,7 +25,8 @@
 			"error",
 			{
 				"endOfLine": "auto",
-				"linebreak": "windows"
+				"linebreak": "windows",
+				"singleQuote": "true"
 			}
 		],
     "quotes": ["error", "single"],
