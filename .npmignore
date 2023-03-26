@@ -1,5 +1,5 @@
-/src
-/tsconfig.json
+src
+tsconfig.json
 test
 script
 node_modules
@@ -8,3 +8,6 @@ dist
 yarn-error.log
 yarn.lock
 .eslintcache
+eslintrc.json
+.commitlintrc.json
+.editconfig
