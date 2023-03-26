@@ -1,7 +1,9 @@
 import { dirname as pathDirname, resolve, normalize, isAbsolute } from 'path'
 import { fileURLToPath } from 'url'
+import { forEach } from 'lodash-es'
+import { PACKAGE_NAME, detectModuleType, transformCommonJsToESM } from './index.js'
 import fse from 'fs-extra'
-import { PACKAGE_NAME, forFun } from './index.js'
+const { readdirSync, readFileSync, readJSONSync, statSync } = fse
 
 export function filename(importMeta: Record<string, any>) {
 	return fileURLToPath(importMeta.url)
@@ -13,7 +15,7 @@ export function dirname(importMeta: Record<string, any>) {
 
 export function getPkgJSON() {
 	const packageJsonPath = getPkgPath('package.json')
-	const packageJson = fse.readJSONSync(packageJsonPath, { throws: false })
+	const packageJson = readJSONSync(packageJsonPath, { throws: false })
 	if (!packageJson) {
 		console.error('package.json not found. Please find it in the directory where package.json exists')
 	}
@@ -45,12 +47,12 @@ export function getDirFiles(
 	const { rootDir, filterType, deep = false } = options
 	const currentDirPath = isAbsolute(dirName) ? normalize(dirName) : resolve(rootDir || process.cwd(), `./${dirName}`)
 	try {
-		const fileDirentList = fse.readdirSync(currentDirPath, {
+		const fileDirentList = readdirSync(currentDirPath, {
 			withFileTypes: true
 		})
 		const filePaths: string[] = []
 		const fileNames: string[] = []
-		forFun(fileDirentList, (file) => {
+		forEach(fileDirentList, (file) => {
 			const fileName = file.name
 			const filePath = resolve(currentDirPath, `./${file.name}`)
 			switch (filterType) {
@@ -95,5 +97,39 @@ export function formatPath(path: string) {
 		return isAbsolute(trimPath) ? trimPath : resolve(process.cwd(), trimPath)
 	} else {
 		return process.cwd()
+	}
+}
+
+export async function readJsFile(filePath: string) {
+	try {
+		const fileData = readFileSync(filePath, {
+			encoding: 'utf-8'
+		})
+		const moduleType = detectModuleType(fileData, {
+			isCode: true
+		})
+		switch (moduleType) {
+			case 'commonjs': {
+				const transformResult = await transformCommonJsToESM(fileData)
+				const module = await import(`data:text/javascript,${transformResult.code}`)
+				return module?.default
+			}
+			case 'esm': {
+				const module = await import(`data:text/javascript,${fileData}`)
+				return module.default
+			}
+			default:
+				console.error('Unrecognized module type for file. must be include "module.export" or "export default"')
+		}
+	} catch (err) {
+		console.error(err)
+	}
+}
+
+export function pathExistSync(path: string) {
+	try {
+		return statSync(path)
+	} catch {
+		return false
 	}
 }

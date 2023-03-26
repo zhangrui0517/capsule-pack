@@ -1,2 +1,4 @@
 export const PACKAGE_NAME = 'capsule-pack'
-export const TEMPLATE_CONFIG_JSON = 'capsule.template.json'
+export const CAPSULE_CONFIG_JS = 'capsule.config.js'
+export const NPM_MIRROR_REGISTRY = 'https://registry.npmmirror.com'
+export const NPM_REGISTRY = 'https://registry.npmjs.org'

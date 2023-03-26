@@ -1,12 +1,26 @@
-import { getDirFiles, getPkgPath, forFun, formatPath } from '../../utils/index.js'
-import { inputTemplateLocation, getInquirerAnswer } from './inquirer.js'
-import { TEMPLATE_CONFIG_JSON } from '../../utils/index.js'
-import { Answers } from 'inquirer'
+import { Answers, QuestionCollection } from 'inquirer'
+import { forEach } from 'lodash-es'
 import { parse, resolve } from 'path'
+import { homedir } from 'os'
+import ora from 'ora'
+import { execa, ExecaError } from 'execa'
 import fse from 'fs-extra'
-const { readFileSync, writeFileSync, statSync, copySync } = fse
 
-const templateFlagRegex = new RegExp('\\$(\\w|\\d|[\u4e00-\u9fa5])+\\$', 'g')
+import {
+	getDirFiles,
+	getPkgPath,
+	formatPath,
+	getNpmInfo,
+	pathExistSync,
+	NPM_MIRROR_REGISTRY
+} from '../../utils/index.js'
+import { inputTemplateLocation, getInquirerAnswer } from './inquirer.js'
+import { CAPSULE_CONFIG_JS, readJsFile, switchRegistry } from '../../utils/index.js'
+import { TemplateConfig } from '../../types'
+
+const { statSync, copySync, readFile, writeFile, mkdirpSync } = fse
+
+const templateFlagRegex = new RegExp('\\$(\\w|\\d|[\u4e00-\u9fa5]|\\-|\\_)+\\$', 'g')
 
 export function formatTemplateChoices(
 	templateList: Array<{
@@ -17,9 +31,9 @@ export function formatTemplateChoices(
 ) {
 	const choices: string[] = []
 	const paths: string[] = []
-	forFun(templateList, (item) => {
+	forEach(templateList, (item) => {
 		const { template, type, templatePath } = item
-		forFun(template, (templateItem, index) => {
+		forEach(template, (templateItem, index) => {
 			choices.push(`${choices.length} ${templateItem} --> [${type}]`)
 			paths.push(templatePath[index]!)
 		})
@@ -54,42 +68,102 @@ export function getTemplateChoices() {
 	return formatTemplateChoices(result)
 }
 
-export async function replaceTemplateString(
-	filePath: string,
-	options: {
-		withInquire?: boolean
-		templateFieldMap?: Answers | void
-	} = {}
-) {
-	const { withInquire, templateFieldMap } = options
-	if (withInquire && templateFieldMap) {
-		console.error("Can't use withInquire and inquirerList at same time!")
-		return
-	}
-	if (!withInquire && !templateFieldMap) {
-		return
-	}
+export async function replaceTemplateString(filePath: string | string[]) {
+	const formatFilePath = Array.isArray(filePath) ? filePath : [filePath]
 	try {
-		const fileData = readFileSync(filePath, {
+		const { choices, choiceFileData, choicesFilePath } = await getTemplateFileChoices(formatFilePath)
+		if (choices.length) {
+			const templateFieldAnswers = await getInquirerAnswer(choices)
+			const formatFileData = choiceFileData.map((item) =>
+				item.replace(templateFlagRegex, (match) => {
+					return templateFieldAnswers?.[match] || match
+				})
+			)
+			Promise.all(choicesFilePath.map((filePathItem, index) => writeFile(filePathItem, formatFileData[index]!)))
+		}
+	} catch (err) {
+		console.error(err)
+	}
+}
+
+export async function getTemplateFileChoices(filePath: string | string[]): Promise<{
+	choices: QuestionCollection<Answers>[]
+	choiceFileData: string[]
+	choicesFilePath: string[]
+}> {
+	const formatFilePath = Array.isArray(filePath) ? filePath : [filePath]
+	const choices: QuestionCollection[] = []
+	const choicesFilePath: string[] = []
+	const choiceFileData: string[] = []
+	const readFilePromise = formatFilePath.map((item) =>
+		readFile(item, {
 			encoding: 'utf-8'
-		}).toString()
-		let templateFieldAnswers: Answers | void = templateFieldMap
-		if (withInquire) {
-			const templateFlags = fileData.match(templateFlagRegex)
-			if (templateFlags) {
-				templateFieldAnswers = await getInquirerAnswer(
-					templateFlags.map((item) => ({
-						type: 'input',
-						message: item,
-						name: item
-					}))
-				)
+		})
+	)
+	const readFileDatas = await Promise.all(readFilePromise)
+	forEach(readFileDatas, (fielDataItem, index) => {
+		const templateFlags = fielDataItem.match(templateFlagRegex)
+		if (templateFlags) {
+			forEach(templateFlags, (flagItem) => {
+				choiceFileData.push(fielDataItem)
+				choicesFilePath.push(formatFilePath[index]!)
+				choices.push({
+					type: 'input',
+					message: flagItem,
+					name: flagItem
+				})
+			})
+		}
+	})
+	return {
+		choices,
+		choiceFileData,
+		choicesFilePath
+	}
+}
+
+export async function downloadTemplate(npmName: string, restart?: boolean) {
+	const templateHomeDir = resolve(homedir(), '.capsule-pack', 'templates')
+	if (!pathExistSync(templateHomeDir)) {
+		mkdirpSync(templateHomeDir)
+	}
+	const spinner = ora('Downloading').start()
+	const packageCommand = 'npm'
+	const commandArgs = ['install', `${npmName}@latest`]
+	try {
+		await execa(packageCommand, commandArgs, {
+			cwd: templateHomeDir
+		})
+		spinner.stop()
+		console.log('download success')
+	} catch (err) {
+		spinner.stop()
+		if ((err as ExecaError<string>).stderr.indexOf('network') > -1 && !restart) {
+			const restartSpinner = ora('network error. switch registry and download again').start()
+			await switchRegistry(NPM_MIRROR_REGISTRY)
+			try {
+				await downloadTemplate(npmName, true)
+				restartSpinner.stop()
+				console.log('redownload success')
+			} catch (err) {
+				restartSpinner.stop()
+				console.error(err)
 			}
 		}
-		const formatFileData = fileData.replace(templateFlagRegex, (match) => {
-			return templateFieldAnswers?.[match] || match
-		})
-		writeFileSync(filePath, formatFileData)
+	}
+}
+
+export async function templateConfigController(filePaths: string[], configFilePath: string) {
+	try {
+		filePaths
+		const configData = (await readJsFile(configFilePath)) as TemplateConfig
+		const { npmName } = configData
+		if (npmName) {
+			const npmInfo = await getNpmInfo(npmName)
+			if (npmInfo.status === 200) {
+				downloadTemplate(npmName)
+			}
+		}
 	} catch (err) {
 		console.error(err)
 	}
@@ -102,30 +176,26 @@ export async function createTemplate(templatePath: string) {
 	const baseName = parse(templatePath).base
 	const toPath = resolve(formatLocation, `./${baseName}`)
 	if (stat.isDirectory()) {
-		copySync(templatePath, toPath)
 		const { filePaths, fileNames } =
-			getDirFiles(toPath, {
-				deep: true,
-				filterType: 'file'
+			getDirFiles(templatePath, {
+				filterType: 'file',
+				deep: true
 			}) || {}
-		const configFileIndex = (fileNames && fileNames.indexOf(TEMPLATE_CONFIG_JSON)) || -1
-		if (configFileIndex > -1) {
-			const configJson = fse.readJSONSync(filePaths![configFileIndex]!, {
-				throws: false
-			})
-			if (configJson) {
-				const answers = await getInquirerAnswer(configJson)
-				forFun(filePaths!, (pathItem) => {
-					replaceTemplateString(pathItem, {
-						templateFieldMap: answers
-					})
-				})
-			}
+		if (!filePaths || !fileNames) {
+			console.error('Template path read error, please check path is vaild')
+			return
+		}
+		const configFileIndex = fileNames.indexOf(CAPSULE_CONFIG_JS)
+		/** exist config file */
+		if (typeof configFileIndex === 'number' && configFileIndex !== -1) {
+			templateConfigController(filePaths, filePaths[configFileIndex]!)
+		} else {
+			copySync(templatePath, toPath)
+			const toFilePaths = filePaths.map((item) => item.replace(templatePath, toPath))
+			replaceTemplateString(toFilePaths)
 		}
 	} else {
 		copySync(templatePath, toPath)
-		await replaceTemplateString(toPath, {
-			withInquire: true
-		})
+		await replaceTemplateString(toPath)
 	}
 }
