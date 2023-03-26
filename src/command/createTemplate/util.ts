@@ -131,8 +131,9 @@ export async function downloadTemplate(
 ): Promise<ExecaReturnValue<string>> {
 	const { restart, execaParams = [] } = options
 	const templateHomeDir = resolve(homedir(), '.capsule-pack', 'templates')
-	if (!pathExistSync(templateHomeDir)) {
-		mkdirpSync(templateHomeDir)
+	const templateNodemodule = resolve(homedir(), '.capsule-pack', 'templates', 'node_modules')
+	if (!pathExistSync(templateNodemodule)) {
+		mkdirpSync(templateNodemodule)
 	}
 	const spinner = ora('Downloading').start()
 	const packageCommand = 'npm'
