@@ -3,7 +3,7 @@ import { forEach } from 'lodash-es'
 import { parse, resolve } from 'path'
 import { homedir } from 'os'
 import ora from 'ora'
-import { execa, ExecaError } from 'execa'
+import { execa, ExecaError, ExecaReturnValue } from 'execa'
 import fse from 'fs-extra'
 
 import {
@@ -15,7 +15,7 @@ import {
 	NPM_MIRROR_REGISTRY
 } from '../../utils/index.js'
 import { inputTemplateLocation, getInquirerAnswer } from './inquirer.js'
-import { CAPSULE_CONFIG_JS, readJsFile, switchRegistry } from '../../utils/index.js'
+import { CAPSULE_CONFIG_JS, readJsFile } from '../../utils/index.js'
 import { TemplateConfig } from '../../types'
 
 const { statSync, copySync, readFile, writeFile, mkdirpSync } = fse
@@ -122,34 +122,46 @@ export async function getTemplateFileChoices(filePath: string | string[]): Promi
 	}
 }
 
-export async function downloadTemplate(npmName: string, restart?: boolean) {
+export async function downloadTemplate(
+	npmName: string,
+	options: {
+		restart?: boolean
+		execaParams?: string[]
+	} = {}
+): Promise<ExecaReturnValue<string>> {
+	const { restart, execaParams = [] } = options
 	const templateHomeDir = resolve(homedir(), '.capsule-pack', 'templates')
 	if (!pathExistSync(templateHomeDir)) {
 		mkdirpSync(templateHomeDir)
 	}
 	const spinner = ora('Downloading').start()
 	const packageCommand = 'npm'
-	const commandArgs = ['install', `${npmName}@latest`]
+	const commandArgs = ['install', `${npmName}@latest`].concat(execaParams)
 	try {
-		await execa(packageCommand, commandArgs, {
+		const execaResult = await execa(packageCommand, commandArgs, {
 			cwd: templateHomeDir
 		})
 		spinner.stop()
-		console.log('download success')
+		console.log('Download success')
+		return execaResult
 	} catch (err) {
 		spinner.stop()
 		if ((err as ExecaError<string>).stderr.indexOf('network') > -1 && !restart) {
-			const restartSpinner = ora('network error. switch registry and download again').start()
-			await switchRegistry(NPM_MIRROR_REGISTRY)
+			const restartSpinner = ora('Network error. switch registry and download again').start()
 			try {
-				await downloadTemplate(npmName, true)
+				const reExecaResult = await downloadTemplate(npmName, {
+					restart: true,
+					execaParams: ['--registry', NPM_MIRROR_REGISTRY]
+				})
 				restartSpinner.stop()
-				console.log('redownload success')
+				return reExecaResult
 			} catch (err) {
 				restartSpinner.stop()
 				console.error(err)
+				return Promise.reject(err)
 			}
 		}
+		return Promise.reject(err)
 	}
 }
 
