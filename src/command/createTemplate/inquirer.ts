@@ -1,6 +1,6 @@
-import inquirer, { QuestionCollection } from 'inquirer'
+import inquirer, { Question, ListQuestionOptions } from 'inquirer'
 
-export async function selectTemplateInquirer(choices: string[]) {
+export async function selectTemplateInquirer(choices: ListQuestionOptions) {
 	const answer = inquirer
 		.prompt([
 			{
@@ -31,7 +31,7 @@ export async function inputTemplateLocation() {
 	return answer
 }
 
-export function getInquirerAnswer(config: QuestionCollection) {
+export function getInquirerAnswer(config: Question[]) {
 	return inquirer.prompt(config).catch((err) => {
 		console.error(err)
 	})

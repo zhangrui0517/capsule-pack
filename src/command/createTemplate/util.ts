@@ -1,7 +1,6 @@
-import { Answers, QuestionCollection } from 'inquirer'
+import { Question } from 'inquirer'
 import { forEach } from 'lodash-es'
 import { parse, resolve } from 'path'
-import { homedir } from 'os'
 import ora from 'ora'
 import { execa, ExecaError, ExecaReturnValue } from 'execa'
 import fse from 'fs-extra'
@@ -69,33 +68,48 @@ export function getTemplateChoices() {
 	return formatTemplateChoices(result)
 }
 
-export async function replaceTemplateString(filePath: string | string[]) {
+export async function replaceTemplateString(filePath: string | string[], extraChoices?: Question[]) {
 	const formatFilePath = Array.isArray(filePath) ? filePath : [filePath]
 	try {
-		const { choices, choiceFileData, choicesFilePath } = await getTemplateFileChoices(formatFilePath)
-		if (choices.length) {
-			const templateFieldAnswers = await getInquirerAnswer(choices)
-			const formatFileData = choiceFileData.map((item) =>
+		const { questions, questionsFileData, questionsFilePath } = await getTemplateFileInquirer(formatFilePath)
+		if (extraChoices?.length) {
+			const choiceNames = questions.map((item) => item.name)
+			forEach(extraChoices, (extraChoiceItem) => {
+				const existIndex = choiceNames.indexOf(extraChoiceItem.name)
+				if (existIndex > -1) {
+					questions[existIndex] = extraChoiceItem
+				} else {
+					questions.push(extraChoiceItem)
+				}
+			})
+		}
+		if (questions.length) {
+			const templateFieldAnswers = await getInquirerAnswer(questions)
+			const formatFileData = questionsFileData.map((item) =>
 				item.replace(templateFlagRegex, (match) => {
 					return templateFieldAnswers?.[match] || match
 				})
 			)
-			Promise.all(choicesFilePath.map((filePathItem, index) => writeFile(filePathItem, formatFileData[index]!)))
+			Promise.all(questionsFilePath.map((filePathItem, index) => writeFile(filePathItem, formatFileData[index]!)))
 		}
 	} catch (err) {
 		console.error(err)
 	}
 }
 
-export async function getTemplateFileChoices(filePath: string | string[]): Promise<{
-	choices: QuestionCollection<Answers>[]
-	choiceFileData: string[]
-	choicesFilePath: string[]
+export async function getTemplateFileInquirer(filePath: string | string[]): Promise<{
+	questions: Question[]
+	questionsFileData: string[]
+	questionsFilePath: string[]
 }> {
 	const formatFilePath = Array.isArray(filePath) ? filePath : [filePath]
-	const choices: QuestionCollection[] = []
-	const choicesFilePath: string[] = []
-	const choiceFileData: string[] = []
+	const questions: Array<{
+		type: 'input'
+		message: string
+		name: string
+	}> = []
+	const questionsFileData: string[] = []
+	const questionsFilePath: string[] = []
 	const readFilePromise = formatFilePath.map((item) =>
 		readFile(item, {
 			encoding: 'utf-8'
@@ -106,9 +120,9 @@ export async function getTemplateFileChoices(filePath: string | string[]): Promi
 		const templateFlags = fielDataItem.match(templateFlagRegex)
 		if (templateFlags) {
 			forEach(templateFlags, (flagItem) => {
-				choiceFileData.push(fielDataItem)
-				choicesFilePath.push(formatFilePath[index]!)
-				choices.push({
+				questionsFileData.push(fielDataItem)
+				questionsFilePath.push(formatFilePath[index]!)
+				questions.push({
 					type: 'input',
 					message: flagItem,
 					name: flagItem
@@ -117,9 +131,9 @@ export async function getTemplateFileChoices(filePath: string | string[]): Promi
 		}
 	})
 	return {
-		choices,
-		choiceFileData,
-		choicesFilePath
+		questions,
+		questionsFileData,
+		questionsFilePath
 	}
 }
 
@@ -167,22 +181,35 @@ export async function downloadTemplate(
 	}
 }
 
-export async function templateConfigController(configFilePath: string, toPath: string) {
+export async function templateConfigController(
+	configFilePath: string,
+	toPath: string,
+	filePaths: string[],
+	templatePath: string
+) {
 	try {
 		const configData = (await readJsFile(configFilePath)) as TemplateConfig
-		const { npmName } = configData
+		const { npmName, inquirer } = configData
 		if (npmName) {
 			const npmInfo = await getNpmInfo(npmName)
 			if (npmInfo.status === 200) {
 				const downloadResult = await downloadTemplate(npmName)
 				if (!downloadResult.failed) {
 					const templateCacheDir = getTemplateCacheDir(['node_modules', npmName, 'template'])
-					console.log('templateCacheDir: ', templateCacheDir)
 					if (pathExistSync(templateCacheDir)?.isDirectory()) {
 						copySync(templateCacheDir, toPath)
+						const { filePaths: npmFilePaths } =
+							getDirFiles(templateCacheDir, {
+								deep: true,
+								filterType: 'file'
+							}) || {}
+						npmFilePaths?.length && replaceTemplateString(npmFilePaths, inquirer || [])
 					}
 				}
 			}
+		} else {
+			copySync(templatePath, toPath)
+			filePaths?.length && replaceTemplateString(filePaths, inquirer || [])
 		}
 	} catch (err) {
 		console.error(err)
@@ -208,7 +235,7 @@ export async function createTemplate(templatePath: string) {
 		const configFileIndex = fileNames.indexOf(CAPSULE_CONFIG_JS)
 		/** exist config file */
 		if (typeof configFileIndex === 'number' && configFileIndex !== -1) {
-			templateConfigController(filePaths[configFileIndex]!, toPath)
+			templateConfigController(filePaths[configFileIndex]!, toPath, filePaths, templatePath)
 		} else {
 			copySync(templatePath, toPath)
 			const toFilePaths = filePaths.map((item) => item.replace(templatePath, toPath))
