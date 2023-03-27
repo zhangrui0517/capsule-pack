@@ -1,6 +1,6 @@
-import { QuestionCollection } from 'inquirer'
+import { Question } from 'inquirer'
 
 export type TemplateConfig = {
 	npmName?: string
-	inquirer?: QuestionCollection[]
+	inquirer?: Question[]
 }
