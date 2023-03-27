@@ -1,5 +1,6 @@
-import { TemplateConfig } from '../types.js'
+import { resolve } from 'path'
+import { homedir } from 'os'
 
-export function defineConfig(config: TemplateConfig) {
-	return config
+export function getTemplateCacheDir(path?: string[]) {
+	return path ? resolve(homedir(), '.capsule', 'templates', ...path) : resolve(homedir(), '.capsule', 'templates')
 }

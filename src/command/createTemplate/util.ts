@@ -12,7 +12,8 @@ import {
 	formatPath,
 	getNpmInfo,
 	pathExistSync,
-	NPM_MIRROR_REGISTRY
+	NPM_MIRROR_REGISTRY,
+	getTemplateCacheDir
 } from '../../utils/index.js'
 import { inputTemplateLocation, getInquirerAnswer } from './inquirer.js'
 import { CAPSULE_CONFIG_JS, readJsFile } from '../../utils/index.js'
@@ -130,17 +131,17 @@ export async function downloadTemplate(
 	} = {}
 ): Promise<ExecaReturnValue<string>> {
 	const { restart, execaParams = [] } = options
-	const templateHomeDir = resolve(homedir(), '.capsule-pack', 'templates')
-	const templateNodemodule = resolve(homedir(), '.capsule-pack', 'templates', 'node_modules')
-	if (!pathExistSync(templateNodemodule)) {
-		mkdirpSync(templateNodemodule)
+	const templateCacheDir = getTemplateCacheDir()
+	const templateCacheModuleDir = resolve(templateCacheDir, 'node_modules')
+	if (!pathExistSync(templateCacheModuleDir)) {
+		mkdirpSync(templateCacheModuleDir)
 	}
 	const spinner = ora('Downloading').start()
 	const packageCommand = 'npm'
 	const commandArgs = ['install', `${npmName}@latest`].concat(execaParams)
 	try {
 		const execaResult = await execa(packageCommand, commandArgs, {
-			cwd: templateHomeDir
+			cwd: templateCacheDir
 		})
 		spinner.stop()
 		console.log('Download success')
@@ -166,15 +167,21 @@ export async function downloadTemplate(
 	}
 }
 
-export async function templateConfigController(filePaths: string[], configFilePath: string) {
+export async function templateConfigController(configFilePath: string, toPath: string) {
 	try {
-		filePaths
 		const configData = (await readJsFile(configFilePath)) as TemplateConfig
 		const { npmName } = configData
 		if (npmName) {
 			const npmInfo = await getNpmInfo(npmName)
 			if (npmInfo.status === 200) {
-				downloadTemplate(npmName)
+				const downloadResult = await downloadTemplate(npmName)
+				if (!downloadResult.failed) {
+					const templateCacheDir = getTemplateCacheDir(['node_modules', npmName, 'template'])
+					console.log('templateCacheDir: ', templateCacheDir)
+					if (pathExistSync(templateCacheDir)?.isDirectory()) {
+						copySync(templateCacheDir, toPath)
+					}
+				}
 			}
 		}
 	} catch (err) {
@@ -201,7 +208,7 @@ export async function createTemplate(templatePath: string) {
 		const configFileIndex = fileNames.indexOf(CAPSULE_CONFIG_JS)
 		/** exist config file */
 		if (typeof configFileIndex === 'number' && configFileIndex !== -1) {
-			templateConfigController(filePaths, filePaths[configFileIndex]!)
+			templateConfigController(filePaths[configFileIndex]!, toPath)
 		} else {
 			copySync(templatePath, toPath)
 			const toFilePaths = filePaths.map((item) => item.replace(templatePath, toPath))

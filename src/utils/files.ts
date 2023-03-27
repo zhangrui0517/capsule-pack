@@ -126,10 +126,10 @@ export async function readJsFile(filePath: string) {
 	}
 }
 
-export function pathExistSync(path: string) {
+export function pathExistSync(path: string): fse.Stats | null {
 	try {
 		return statSync(path)
 	} catch {
-		return false
+		return null
 	}
 }
