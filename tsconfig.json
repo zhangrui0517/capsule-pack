@@ -26,10 +26,8 @@
     "lib": ["es6", "es2017"],
     /* 构建产物的规范 */
     "module": "ES2022",
-    /* 允许export=导出，由import from 导入 */
-    "esModuleInterop": true,
     /* 生成声明文件，开启后会自动生成声明文件 */
-    "declaration": true, 
+    "declaration": false,
     /* 构建输出目录 */
     "outDir": "./lib",
     /* 要构建的目录 */
@@ -37,8 +35,7 @@
     /* 是否不生成文件 */
     "noEmit": false,
     /* 模块解析 */
-    "moduleResolution":"Node",
-    "resolveJsonModule": true
+    "moduleResolution":"Node"
   },
   "include": ["./src"],
   /* 不检查的目录 */

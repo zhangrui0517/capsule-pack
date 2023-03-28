@@ -5,11 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "prepare": "npx husky install",
+    "prepare": "husky install",
     "lint:script": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./",
-    "lint:style": "stylelint --fix \"src/**/*.{css,scss}\"",
-    "dev": "npx tsc --watch -p ./tsconfig.json",
-    "build": "npx tsc -p ./tsconfig.json || exit 0"
+    "dev": "tsc --watch -p ./tsconfig.json",
+    "build": "rimraf ./lib && tsc -p ./tsconfig.json && tsc -p ./tsconfig.type.json && exit 0"
   },
   "husky": {
     "pre-commit": "npm run lint"
@@ -46,6 +45,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
+    "rimraf": "^4.4.1",
     "typescript": "^4.9.5"
   },
   "dependencies": {
