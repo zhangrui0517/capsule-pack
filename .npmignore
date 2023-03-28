@@ -1,9 +1,11 @@
+// common file
 src
-tsconfig.json
 test
 script
-node_modules
 dist
+// config file
+tsconfig.json
+node_modules
 .yarnrc
 yarn-error.log
 yarn.lock
@@ -11,3 +13,8 @@ yarn.lock
 eslintrc.json
 .commitlintrc.json
 .editconfig
+pnpm-lock.yaml
+tsconfig.type.json
+.prettierrc
+.gitignore
+.commitlintrc.json
