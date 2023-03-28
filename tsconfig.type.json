@@ -8,6 +8,7 @@
     "module": "ES2022",
     /* 生成声明文件，开启后会自动生成声明文件 */
     "declaration": true,
+		/* 只生成类型声明文件 */
 		"emitDeclarationOnly": true,
     /* 构建输出目录 */
     "outDir": "./lib/typing",
