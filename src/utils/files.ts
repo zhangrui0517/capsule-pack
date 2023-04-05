@@ -27,10 +27,8 @@ export function getPkgJSON() {
 
 export function getPkgPath(filename?: string) {
 	const currentDir = dirname(import.meta)
-	const packageRoot = resolve(
-		currentDir.split(PACKAGE_NAME)[0]!,
-		filename ? `./${PACKAGE_NAME}/${filename}` : `./${PACKAGE_NAME}`
-	)
+	const prefixPath = currentDir.split(PACKAGE_NAME).slice(0, -1).join(PACKAGE_NAME)
+	const packageRoot = resolve(prefixPath, filename ? `./${PACKAGE_NAME}/${filename}` : `./${PACKAGE_NAME}`)
 	return packageRoot
 }
 
