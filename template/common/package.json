@@ -1,0 +1,32 @@
+{
+  "name": "react-template",
+  "version": "1.0.0",
+  "description": "react development template",
+  "main": "index.js",
+  "scripts": {
+		"prepare": "husky install",
+    "lint:script": "eslint --ext .js,.jsx,.ts,.tsx --fix --quiet ./"
+  },
+	"lint-staged": {
+    "**/*.{js,jsx,tsx,ts}": [
+      "npm run lint:script"
+    ]
+  },
+  "keywords": [],
+  "author": "zhangrui0517",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^17.5.1",
+    "@commitlint/config-conventional": "^17.4.4",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "commitlint": "^17.5.1",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.3"
+  }
+}
