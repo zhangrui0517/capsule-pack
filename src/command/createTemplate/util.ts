@@ -15,7 +15,7 @@ import {
 	getTemplateCacheDir
 } from '../../utils/index.js'
 import { inputTemplateLocation } from './inquirer.js'
-import { CAPSULE_CONFIG_JS, readJsFile, getInquirerAnswer } from '../../utils/index.js'
+import { CAPSULE_CONFIG_JS, EXCLUDE_TEMPLATE, readJsFile, getInquirerAnswer } from '../../utils/index.js'
 import { TemplateConfig } from '../../types'
 
 const { statSync, copySync, readFile, writeFile, mkdirpSync } = fse
@@ -47,7 +47,10 @@ export function formatTemplateChoices(
 export function getTemplateChoices() {
 	const { fileNames: innerTemplate, filePaths: innerTemplatePath } =
 		getDirFiles('template', {
-			rootDir: getPkgPath()
+			rootDir: getPkgPath(),
+			filter: (file: string) => {
+				return !EXCLUDE_TEMPLATE.includes(file)
+			}
 		}) || {}
 	const { fileNames: customTemplate, filePaths: customTemplatePath } = getDirFiles('template') || {}
 	const result = []
@@ -197,7 +200,7 @@ export async function templateConfigController(
 				if (!downloadResult.failed) {
 					const templateCacheDir = getTemplateCacheDir(['node_modules', npmName, 'template'])
 					if (pathExistSync(templateCacheDir)?.isDirectory()) {
-						copySync(templateCacheDir, toPath)
+						copySync(templateCacheDir, toPath, copyWithoutCapsuleConfig)
 						const { filePaths: npmFilePaths } =
 							getDirFiles(templateCacheDir, {
 								deep: true,
@@ -208,7 +211,7 @@ export async function templateConfigController(
 				}
 			}
 		} else {
-			copySync(templatePath, toPath)
+			copySync(templatePath, toPath, copyWithoutCapsuleConfig)
 			filePaths?.length && replaceTemplateString(filePaths, inquirer || [])
 		}
 	} catch (err) {
@@ -235,14 +238,21 @@ export async function createTemplate(templatePath: string) {
 		const configFileIndex = fileNames.indexOf(CAPSULE_CONFIG_JS)
 		/** exist config file */
 		if (typeof configFileIndex === 'number' && configFileIndex !== -1) {
-			templateConfigController(filePaths[configFileIndex]!, toPath, filePaths, templatePath)
+			templateConfigController(filePaths[configFileIndex]!, formatLocation, filePaths, templatePath)
 		} else {
-			copySync(templatePath, toPath)
-			const toFilePaths = filePaths.map((item) => item.replace(templatePath, toPath))
+			copySync(templatePath, formatLocation)
+			const toFilePaths = filePaths.map((item) => item.replace(templatePath, formatLocation))
 			replaceTemplateString(toFilePaths)
 		}
 	} else {
 		copySync(templatePath, toPath)
 		await replaceTemplateString(toPath)
+	}
+}
+
+export const copyWithoutCapsuleConfig = {
+	filter: (sourcePath: string) => {
+		const parsePath = parse(sourcePath).base
+		return parsePath !== CAPSULE_CONFIG_JS
 	}
 }
