@@ -10,11 +10,14 @@ node_modules
 yarn-error.log
 yarn.lock
 .eslintcache
-eslintrc.json
+.eslintrc.json
 .commitlintrc.json
 .editconfig
+.editorconfig
+.eslintignore
 pnpm-lock.yaml
 tsconfig.type.json
 .prettierrc
 .gitignore
 .commitlintrc.json
+.husky
