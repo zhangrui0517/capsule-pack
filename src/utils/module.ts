@@ -31,3 +31,10 @@ export async function transformCommonJsToESM(fileData: string) {
 		loader: 'js'
 	})
 }
+
+export async function transformESMToCommonJs(fileData: string) {
+	return transformSync(fileData, {
+		format: 'cjs',
+		loader: 'js'
+	})
+}
