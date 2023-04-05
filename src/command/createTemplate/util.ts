@@ -14,8 +14,8 @@ import {
 	NPM_MIRROR_REGISTRY,
 	getTemplateCacheDir
 } from '../../utils/index.js'
-import { inputTemplateLocation, getInquirerAnswer } from './inquirer.js'
-import { CAPSULE_CONFIG_JS, readJsFile } from '../../utils/index.js'
+import { inputTemplateLocation } from './inquirer.js'
+import { CAPSULE_CONFIG_JS, readJsFile, getInquirerAnswer } from '../../utils/index.js'
 import { TemplateConfig } from '../../types'
 
 const { statSync, copySync, readFile, writeFile, mkdirpSync } = fse

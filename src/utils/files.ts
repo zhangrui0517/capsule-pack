@@ -1,7 +1,10 @@
-import { dirname as pathDirname, resolve, normalize, isAbsolute } from 'path'
+import { dirname as pathDirname, resolve, normalize, isAbsolute, extname } from 'path'
 import { fileURLToPath } from 'url'
 import { forEach } from 'lodash-es'
-import { PACKAGE_NAME, detectModuleType, transformCommonJsToESM } from './index.js'
+import Module, { createRequire } from 'module'
+import vm from 'vm'
+import { PACKAGE_NAME, detectModuleType } from './index.js'
+import { NodeModuleWithCompile, ModuleWithExtensions } from '../types'
 import fse from 'fs-extra'
 const { readdirSync, readFileSync, readJSONSync, statSync } = fse
 
@@ -110,12 +113,11 @@ export async function readJsFile(filePath: string) {
 		})
 		switch (moduleType) {
 			case 'commonjs': {
-				const transformResult = await transformCommonJsToESM(fileData)
-				const module = await import(`data:text/javascript,${transformResult.code}`)
-				return module?.default
+				const module = customRequire(fileData, filePath)
+				return module
 			}
 			case 'esm': {
-				const module = await import(`data:text/javascript,${fileData}`)
+				const module = await import(filePath)
 				return module.default
 			}
 			default:
@@ -132,4 +134,25 @@ export function pathExistSync(path: string): fse.Stats | null {
 	} catch {
 		return null
 	}
+}
+
+export function customRequire(fileData: string, filePath: string) {
+	const extName = extname(filePath)
+	const defaultLoader = (Module as ModuleWithExtensions)._extensions[extName]
+	const customLoader = (module: NodeModuleWithCompile, filename: string) => {
+		if (filename === filePath) {
+			module._compile(fileData, filename)
+		} else {
+			defaultLoader && defaultLoader(module, filename)
+		}
+	}
+	const customContext = vm.createContext({
+		require: createRequire(import.meta.url),
+		Module: {
+			_extensions: Object.assign((Module as ModuleWithExtensions)._extensions, {
+				[`${extName}`]: customLoader
+			})
+		}
+	})
+	return vm.runInContext(`require('${filePath}')`, customContext)
 }
