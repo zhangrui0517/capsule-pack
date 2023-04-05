@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url'
 import { forEach } from 'lodash-es'
 import Module, { createRequire } from 'module'
 import vm from 'vm'
-import { PACKAGE_NAME, detectModuleType } from './index.js'
+import { PACKAGE_NAME, detectModuleType, transformESMToCommonJs } from './index.js'
 import { NodeModuleWithCompile, ModuleWithExtensions } from '../types'
 import fse from 'fs-extra'
 const { readdirSync, readFileSync, readJSONSync, statSync } = fse
@@ -40,6 +40,7 @@ export function getDirFiles(
 		rootDir?: string
 		filterType?: 'dir' | 'file'
 		deep?: boolean
+		filter?: (path: string) => boolean
 	} = {}
 ):
 	| {
@@ -47,7 +48,7 @@ export function getDirFiles(
 			filePaths: string[]
 	  }
 	| undefined {
-	const { rootDir, filterType, deep = false } = options
+	const { rootDir, filterType, deep = false, filter } = options
 	const currentDirPath = isAbsolute(dirName) ? normalize(dirName) : resolve(rootDir || process.cwd(), `./${dirName}`)
 	try {
 		const fileDirentList = readdirSync(currentDirPath, {
@@ -58,6 +59,8 @@ export function getDirFiles(
 		forEach(fileDirentList, (file) => {
 			const fileName = file.name
 			const filePath = resolve(currentDirPath, `./${file.name}`)
+			const isFilter = (filter && filter(fileName)) !== false ? true : false
+			if (!isFilter) return
 			switch (filterType) {
 				case 'dir': {
 					file.isDirectory() && fileNames.push(fileName) && filePaths.push(filePath)
@@ -117,7 +120,8 @@ export async function readJsFile(filePath: string) {
 				return module
 			}
 			case 'esm': {
-				const module = await import(filePath)
+				const data = await transformESMToCommonJs(fileData)
+				const module = customRequire(data.code, filePath)
 				return module.default
 			}
 			default:
