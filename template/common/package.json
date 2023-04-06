@@ -1,7 +1,7 @@
 {
-  "name": "react-template",
+  "name": "$packageName$",
   "version": "1.0.0",
-  "description": "react development template",
+  "description": "$description$",
   "main": "index.js",
   "scripts": {
 		"prepare": "husky install",
@@ -13,8 +13,8 @@
     ]
   },
   "keywords": [],
-  "author": "zhangrui0517",
-  "license": "ISC",
+  "author": "$author$",
+  "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^17.5.1",
     "@commitlint/config-conventional": "^17.4.4",
