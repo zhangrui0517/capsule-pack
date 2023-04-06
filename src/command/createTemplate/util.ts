@@ -52,7 +52,12 @@ export function getTemplateChoices() {
 				return !EXCLUDE_TEMPLATE.includes(file)
 			}
 		}) || {}
-	const { fileNames: customTemplate, filePaths: customTemplatePath } = getDirFiles('template') || {}
+	const { fileNames: customTemplate, filePaths: customTemplatePath } =
+		getDirFiles('template', {
+			filter: (file: string) => {
+				return !EXCLUDE_TEMPLATE.includes(file)
+			}
+		}) || {}
 	const result = []
 	if (innerTemplate?.length) {
 		result.push({
