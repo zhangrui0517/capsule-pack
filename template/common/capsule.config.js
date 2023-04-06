@@ -1,17 +1,17 @@
 export default {
 	inquirer: [
 		{
-			name: 'react-template',
+			name: '$packageName$',
 			message: '模块名称：',
 			type: 'input'
 		},
 		{
-			name: 'zhangrui0517',
+			name: '$author$',
 			message: '作者：',
 			type: 'input'
 		},
 		{
-			name: 'react development template',
+			name: '$description$',
 			message: '描述：',
 			type: 'input'
 		}
