@@ -241,12 +241,14 @@ export async function createTemplate(templatePath: string) {
 			return
 		}
 		const configFileIndex = fileNames.indexOf(CAPSULE_CONFIG_JS)
+		const toFilePaths = filePaths
+			.map((item) => item.replace(templatePath, formatLocation))
+			.filter((item) => !item.includes(CAPSULE_CONFIG_JS))
 		/** exist config file */
 		if (typeof configFileIndex === 'number' && configFileIndex !== -1) {
-			templateConfigController(filePaths[configFileIndex]!, formatLocation, filePaths, templatePath)
+			templateConfigController(filePaths[configFileIndex]!, formatLocation, toFilePaths, templatePath)
 		} else {
 			copySync(templatePath, formatLocation)
-			const toFilePaths = filePaths.map((item) => item.replace(templatePath, formatLocation))
 			replaceTemplateString(toFilePaths)
 		}
 	} else {
