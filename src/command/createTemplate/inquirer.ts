@@ -16,13 +16,14 @@ export async function selectTemplateInquirer(choices: ListQuestionOptions) {
 	return answer
 }
 
-export async function inputTemplateLocation() {
+export async function inputTemplateLocationInquirer() {
 	const answer = inquirer
 		.prompt([
 			{
 				type: 'input',
 				name: 'location',
-				message: 'Template creation location. (default location is current path)'
+				message:
+					'Template creation location. (default location is current path)'
 			}
 		])
 		.catch((err) => {

@@ -14,13 +14,21 @@ import {
 	NPM_MIRROR_REGISTRY,
 	getTemplateCacheDir
 } from '../../utils/index.js'
-import { inputTemplateLocation } from './inquirer.js'
-import { CAPSULE_CONFIG_JS, EXCLUDE_TEMPLATE, readJsFile, getInquirerAnswer } from '../../utils/index.js'
+import { inputTemplateLocationInquirer } from './inquirer.js'
+import {
+	CAPSULE_CONFIG_JS,
+	EXCLUDE_TEMPLATE,
+	readJsFile,
+	getInquirerAnswer
+} from '../../utils/index.js'
 import { TemplateConfig } from '../../types'
 
 const { statSync, copySync, readFile, writeFile, mkdirpSync } = fse
 
-const templateFlagRegex = new RegExp('\\$(\\w|\\d|[\u4e00-\u9fa5]|\\-|\\_)+\\$', 'g')
+const templateFlagRegex = new RegExp(
+	'\\$(\\w|\\d|[\u4e00-\u9fa5]|\\-|\\_)+\\$',
+	'g'
+)
 
 export function formatTemplateChoices(
 	templateList: Array<{
@@ -76,10 +84,14 @@ export function getTemplateChoices() {
 	return formatTemplateChoices(result)
 }
 
-export async function replaceTemplateString(filePath: string | string[], extraChoices?: Question[]) {
+export async function replaceTemplateString(
+	filePath: string | string[],
+	extraChoices?: Question[]
+) {
 	const formatFilePath = Array.isArray(filePath) ? filePath : [filePath]
 	try {
-		const { questions, questionsFileData, questionsFilePath } = await getTemplateFileInquirer(formatFilePath)
+		const { questions, questionsFileData, questionsFilePath } =
+			await getTemplateFileInquirer(formatFilePath)
 		if (extraChoices?.length) {
 			const choiceNames = questions.map((item) => item.name)
 			forEach(extraChoices, (extraChoiceItem) => {
@@ -98,14 +110,20 @@ export async function replaceTemplateString(filePath: string | string[], extraCh
 					return templateFieldAnswers?.[match] || match
 				})
 			)
-			Promise.all(questionsFilePath.map((filePathItem, index) => writeFile(filePathItem, formatFileData[index]!)))
+			Promise.all(
+				questionsFilePath.map((filePathItem, index) =>
+					writeFile(filePathItem, formatFileData[index]!)
+				)
+			)
 		}
 	} catch (err) {
 		console.error(err)
 	}
 }
 
-export async function getTemplateFileInquirer(filePath: string | string[]): Promise<{
+export async function getTemplateFileInquirer(
+	filePath: string | string[]
+): Promise<{
 	questions: Question[]
 	questionsFileData: string[]
 	questionsFilePath: string[]
@@ -170,8 +188,13 @@ export async function downloadTemplate(
 		return execaResult
 	} catch (err) {
 		spinner.stop()
-		if ((err as ExecaError<string>).stderr.indexOf('network') > -1 && !restart) {
-			const restartSpinner = ora('Network error. switch registry and download again').start()
+		if (
+			(err as ExecaError<string>).stderr.indexOf('network') > -1 &&
+			!restart
+		) {
+			const restartSpinner = ora(
+				'Network error. switch registry and download again'
+			).start()
 			try {
 				const reExecaResult = await downloadTemplate(npmName, {
 					restart: true,
@@ -189,6 +212,7 @@ export async function downloadTemplate(
 	}
 }
 
+/** 解析配置文件 */
 export async function templateConfigController(
 	configFilePath: string,
 	toPath: string,
@@ -203,7 +227,11 @@ export async function templateConfigController(
 			if (npmInfo.status === 200) {
 				const downloadResult = await downloadTemplate(npmName)
 				if (!downloadResult.failed) {
-					const templateCacheDir = getTemplateCacheDir(['node_modules', npmName, 'template'])
+					const templateCacheDir = getTemplateCacheDir([
+						'node_modules',
+						npmName,
+						'template'
+					])
 					if (pathExistSync(templateCacheDir)?.isDirectory()) {
 						copySync(templateCacheDir, toPath, copyWithoutCapsuleConfig)
 						const { filePaths: npmFilePaths } =
@@ -211,7 +239,8 @@ export async function templateConfigController(
 								deep: true,
 								filterType: 'file'
 							}) || {}
-						npmFilePaths?.length && replaceTemplateString(npmFilePaths, inquirer || [])
+						npmFilePaths?.length &&
+							replaceTemplateString(npmFilePaths, inquirer || [])
 					}
 				}
 			}
@@ -226,10 +255,11 @@ export async function templateConfigController(
 
 export async function createTemplate(templatePath: string) {
 	const stat = statSync(templatePath)
-	const { location } = await inputTemplateLocation()
+	const { location } = await inputTemplateLocationInquirer()
 	const formatLocation = formatPath(location)
 	const baseName = parse(templatePath).base
 	const toPath = resolve(formatLocation, `./${baseName}`)
+	/** 模板是目录的处理 */
 	if (stat.isDirectory()) {
 		const { filePaths, fileNames } =
 			getDirFiles(templatePath, {
@@ -240,18 +270,25 @@ export async function createTemplate(templatePath: string) {
 			console.error('Template path read error, please check path is vaild')
 			return
 		}
+		/** 查找是否存在配置文件 */
 		const configFileIndex = fileNames.indexOf(CAPSULE_CONFIG_JS)
 		const toFilePaths = filePaths
 			.map((item) => item.replace(templatePath, formatLocation))
 			.filter((item) => !item.includes(CAPSULE_CONFIG_JS))
-		/** exist config file */
-		if (typeof configFileIndex === 'number' && configFileIndex !== -1) {
-			templateConfigController(filePaths[configFileIndex]!, formatLocation, toFilePaths, templatePath)
+		if (configFileIndex !== -1) {
+			templateConfigController(
+				filePaths[configFileIndex]!,
+				formatLocation,
+				toFilePaths,
+				templatePath
+			)
 		} else {
+			/** 不存在配置文件，则直接复制到指定位置 */
 			copySync(templatePath, formatLocation)
 			replaceTemplateString(toFilePaths)
 		}
 	} else {
+		/** 如果是文件，则直接复制到指定位置 */
 		copySync(templatePath, toPath)
 		await replaceTemplateString(toPath)
 	}
