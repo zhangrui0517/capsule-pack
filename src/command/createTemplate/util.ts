@@ -4,6 +4,7 @@ import { parse, resolve } from 'path'
 import ora from 'ora'
 import { execa, ExecaError, ExecaReturnValue } from 'execa'
 import fse from 'fs-extra'
+import { QUOTATION_MARKS_REGEX } from '../../utils/index.js'
 
 import {
 	getDirFiles,
@@ -110,14 +111,16 @@ export async function replaceTemplateString(
 					return templateFieldAnswers?.[match] || match
 				})
 			)
-			Promise.all(
+			await Promise.all(
 				questionsFilePath.map((filePathItem, index) =>
 					writeFile(filePathItem, formatFileData[index]!)
 				)
 			)
 		}
+		return Promise.resolve(true)
 	} catch (err) {
 		console.error(err)
+		return Promise.reject(false)
 	}
 }
 
@@ -221,7 +224,7 @@ export async function templateConfigController(
 ) {
 	try {
 		const configData = (await readJsFile(configFilePath)) as TemplateConfig
-		const { npmName, inquirer } = configData
+		const { npmName, inquirer, postScripts } = configData
 		if (npmName) {
 			const npmInfo = await getNpmInfo(npmName)
 			if (npmInfo.status === 200) {
@@ -246,7 +249,33 @@ export async function templateConfigController(
 			}
 		} else {
 			copySync(templatePath, toPath, copyWithoutCapsuleConfig)
-			filePaths?.length && replaceTemplateString(filePaths, inquirer || [])
+			filePaths?.length &&
+				(await replaceTemplateString(filePaths, inquirer || []))
+		}
+		/** todo: 增加包管理器选择 */
+		await execa('pnpm', ['i'])
+		/** 执行自定义脚本 */
+		if (postScripts?.length) {
+			for (let scriptItem of postScripts) {
+				const withQuotationStrs = scriptItem.match(QUOTATION_MARKS_REGEX)
+				let quotesMap: null | Record<string, any> = null
+				if (withQuotationStrs) {
+					forEach(withQuotationStrs, (quotationStr, index) => {
+						const replaceKey = `quotes{${index}}`
+						scriptItem = scriptItem.replace(quotationStr, replaceKey)
+						quotesMap = quotesMap || {}
+						quotesMap[replaceKey] = quotationStr
+					})
+				}
+				let scriptArr = scriptItem.split(' ')
+				if (quotesMap) {
+					scriptArr = scriptArr.map((item) => quotesMap![item] || item)
+				}
+				const [commandName, ...params] = scriptArr
+				if (commandName) {
+					await execa(commandName, params)
+				}
+			}
 		}
 	} catch (err) {
 		console.error(err)

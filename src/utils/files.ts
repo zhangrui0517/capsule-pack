@@ -1,9 +1,19 @@
-import { dirname as pathDirname, resolve, normalize, isAbsolute, extname } from 'path'
+import {
+	dirname as pathDirname,
+	resolve,
+	normalize,
+	isAbsolute,
+	extname
+} from 'path'
 import { fileURLToPath } from 'url'
 import { forEach } from 'lodash-es'
 import Module, { createRequire } from 'module'
 import vm from 'vm'
-import { PACKAGE_NAME, detectModuleType, transformESMToCommonJs } from './index.js'
+import {
+	PACKAGE_NAME,
+	detectModuleType,
+	transformESMToCommonJs
+} from './index.js'
 import { NodeModuleWithCompile, ModuleWithExtensions } from '../types'
 import fse from 'fs-extra'
 const { readdirSync, readFileSync, readJSONSync, statSync } = fse
@@ -20,15 +30,23 @@ export function getPkgJSON() {
 	const packageJsonPath = getPkgPath('package.json')
 	const packageJson = readJSONSync(packageJsonPath, { throws: false })
 	if (!packageJson) {
-		console.error('package.json not found. Please find it in the directory where package.json exists')
+		console.error(
+			'package.json not found. Please find it in the directory where package.json exists'
+		)
 	}
 	return packageJson
 }
 
 export function getPkgPath(filename?: string) {
 	const currentDir = dirname(import.meta)
-	const prefixPath = currentDir.split(PACKAGE_NAME).slice(0, -1).join(PACKAGE_NAME)
-	const packageRoot = resolve(prefixPath, filename ? `./${PACKAGE_NAME}/${filename}` : `./${PACKAGE_NAME}`)
+	const prefixPath = currentDir
+		.split(PACKAGE_NAME)
+		.slice(0, -1)
+		.join(PACKAGE_NAME)
+	const packageRoot = resolve(
+		prefixPath,
+		filename ? `./${PACKAGE_NAME}/${filename}` : `./${PACKAGE_NAME}`
+	)
 	return packageRoot
 }
 
@@ -47,7 +65,9 @@ export function getDirFiles(
 	  }
 	| undefined {
 	const { rootDir, filterType, deep = false, filter } = options
-	const currentDirPath = isAbsolute(dirName) ? normalize(dirName) : resolve(rootDir || process.cwd(), `./${dirName}`)
+	const currentDirPath = isAbsolute(dirName)
+		? normalize(dirName)
+		: resolve(rootDir || process.cwd(), `./${dirName}`)
 	try {
 		const fileDirentList = readdirSync(currentDirPath, {
 			withFileTypes: true
@@ -61,7 +81,9 @@ export function getDirFiles(
 			if (!isFilter) return
 			switch (filterType) {
 				case 'dir': {
-					file.isDirectory() && fileNames.push(fileName) && filePaths.push(filePath)
+					file.isDirectory() &&
+						fileNames.push(fileName) &&
+						filePaths.push(filePath)
 					break
 				}
 				case 'file': {
@@ -123,7 +145,9 @@ export async function readJsFile(filePath: string) {
 				return module.default
 			}
 			default:
-				console.error('Unrecognized module type for file. must be include "module.export" or "export default"')
+				console.error(
+					'Unrecognized module type for file. must be include "module.export" or "export default"'
+				)
 		}
 	} catch (err) {
 		console.error(err)
